@@ -36,12 +36,26 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", ".hbs");
 
 var start = 0;
+var number = 0;
+var member = [];
 io.on("connection", function(socket) {
   socket.on("start", function(data) {
     start = parseInt(data);
     io.sockets.emit("startOk", start);
   });
- 
+  socket.on("nickName", function(data) {
+    member.push(data);
+    number++;
+    io.sockets.emit("Member", member);
+    io.sockets.emit("Number", number);
+  });
+
+  socket.emit("Number", number);
+  socket.on("disconnect", function() {
+    start = 0;
+    number = 0;
+    member = [];
+  });
 });
 
 app.get("/", function(req, res) {

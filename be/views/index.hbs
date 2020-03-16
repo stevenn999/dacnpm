@@ -12,26 +12,55 @@
 
 <body>
     <div class="container">
+        <div id="box">
+            <h2>PIN :6969</h2>
+            <h2>Số lượng thành viên: <h2 id="number"> </h2>
+            </h2>
+            <h2>Thành viên:<h5 id="member"></h5>
+            </h2>
 
-        <button id="start" ><h1>Start</h1></button>
-        <h2 id="nodoi"></h2>
+            <button id="start">
+                <h1>Start</h1>
+            </button>
+        </div>
+
+        <div id="question">
+            <h1>Hiện câu hỏi</h1>
+        </div>
+
+
 
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-       
+
         var socket = io('http://localhost:8000');
-      
+
         $(document).ready(function () {
-          $("#start").click(function(){
-              socket.emit("start",1)
-          })
+            $('#question').hide();
+            $("#start").click(function () {
+                socket.emit("start", 1);
+                $('#box').hide();
+                $('#question').show();
+            })
+
+            socket.on("Member", function (data) {
+                console.log(data)
+                $('#member').text(data);
+            })
+            socket.on("Number", function (data) {
+                console.log(data)
+                $('#number').text(data);
+            })
+
         });
 
+
+
     </script>
-    <h1 id="noidung"></h1>
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
