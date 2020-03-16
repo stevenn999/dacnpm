@@ -1,0 +1,22 @@
+.wrapper {
+    height: 100vh;
+    margin: 0 auto;
+    background: #cabf28;
+}
+.question{
+    margin-top: 5%;
+    text-align: center;
+    height: 10%;
+    width:100%;
+}
+.img{
+    background: #dfded4;
+    margin-top: 5%;
+    margin: 5% auto;
+    height: 40%;
+    width:80%;
+}
+.answer{
+    margin-top: 5%;
+    width:100%;
+}

@@ -1,0 +1,23 @@
+{
+    "questions": [{
+            "number": 1,
+            "question": "Cá gì có hình tròn?",
+            "rightAnswer": 2,
+            "answer": ["Cá chép",
+                "Cá mập",
+                "Cá viên chiên",
+                "Cá heo"
+            ]
+        },
+        {
+            "number": 2,
+            "question": "Cá không ăn ... cá ươn?",
+            "rightAnswer": 1,
+            "answer": ["Mặn",
+                "Muối",
+                "Sống",
+                "Chua"
+            ]
+        }
+    ]
+}
