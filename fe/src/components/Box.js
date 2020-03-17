@@ -35,7 +35,10 @@ export class Box extends Component {
 
     const { endpoint } = this.state;
     this.socket = openSocket(endpoint, options);
-
+    this.socket.on("numberQuestion", data => {
+      console.log(data);
+      this.setState({ numberQuestion: data });
+    });
     this.socket.on("startOk", data => {
       if (parseInt(data)) {
         this.getData();
@@ -64,10 +67,14 @@ export class Box extends Component {
     var { numberQuestion } = this.state;
     const rightAnswer = questions[numberQuestion].rightAnswer;
 
-    numberAnswer === rightAnswer
-      ? alert("Bạn trả lời đúng rồi")
-      : alert("Bạn trả lời sai rồi");
-    numberQuestion += 1;
+    if (numberAnswer === rightAnswer) {
+      alert("Bạn trả lời đúng rồi");
+      this.socket.emit("answer", "súng");
+    } else {
+      alert("Bạn trả lời sai rồi");
+      this.socket.emit("answer", "sai");
+    }
+
     if (questions.length > numberQuestion) {
       this.setState({
         numberQuestion

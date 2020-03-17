@@ -38,20 +38,30 @@ app.set("view engine", ".hbs");
 var start = 0;
 var number = 0;
 var member = [];
+var numberQuestion = 0;
 io.on("connection", function(socket) {
+  socket.on("next", function(data) {
+    numberQuestion++;
+    io.sockets.emit("numberQuestion", numberQuestion);
+  });
   socket.on("start", function(data) {
     start = parseInt(data);
     io.sockets.emit("startOk", start);
   });
+  socket.on("answer", function(data) {
+    io.sockets.emit("answer", socket.nickName + " trả lời " + data);
+  });
   socket.on("nickName", function(data) {
     member.push(data);
+    socket.nickName = data;
     number++;
     io.sockets.emit("Member", member);
     io.sockets.emit("Number", number);
   });
-
+  io.sockets.emit("numberQuestion", numberQuestion);
   socket.emit("Number", number);
   socket.on("disconnect", function() {
+    numberQuestion = 0;
     start = 0;
     number = 0;
     member = [];

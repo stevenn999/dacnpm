@@ -11,12 +11,12 @@
         },
         {
             "number": 2,
-            "question": "Cá không ăn ... cá ươn?",
+            "question": "Ai là ca sĩ thể hiện bài hãy trao cho anh?",
             "rightAnswer": 1,
-            "answer": ["Mặn",
-                "Muối",
-                "Sống",
-                "Chua"
+            "answer": ["Jack",
+                "Sơn Tùng MTP",
+                "Karik",
+                "Min"
             ]
         }
     ]
