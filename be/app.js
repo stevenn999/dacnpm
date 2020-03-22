@@ -34,43 +34,66 @@ app.use(express.static("public"));
 //Set view
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", ".hbs");
-
-var start = 0;
 var number = 0;
-var member = [];
 var numberQuestion = 0;
+var numberMemberAnswer = 0;
 io.on("connection", function(socket) {
-  socket.on("next", function(data) {
-    numberQuestion++;
-    io.sockets.emit("numberQuestion", numberQuestion);
-  });
-  socket.on("start", function(data) {
-    start = parseInt(data);
+  console.log("CÓ người kết nối");
+
+  socket.on("start", function(start) {
     io.sockets.emit("startOk", start);
   });
-  socket.on("answer", function(data) {
-    io.sockets.emit("answer", socket.nickName + " trả lời " + data);
+
+  socket.on("next", function(data) {
+    numberQuestion += 1;
+    numberMemberAnswer = 0;
+    io.sockets.emit("numberMemberAnswer", numberMemberAnswer);
+    io.sockets.emit("numberQuestion", numberQuestion);
   });
+
   socket.on("nickName", function(data) {
-    member.push(data);
+    var memberNew = {
+      id: socket.id,
+      nickName: data,
+      rightQuestion: 0,
+      score: 0
+    };
+
     socket.nickName = data;
     number++;
-    io.sockets.emit("Member", member);
+    io.sockets.emit("newMember", memberNew);
     io.sockets.emit("Number", number);
   });
+
+  socket.on("memberAnswer", function(data) {
+    numberMemberAnswer++;
+    io.sockets.emit("numberMemberAnswer", numberMemberAnswer);
+    io.sockets.emit("memberAnswer", {
+      id: socket.id,
+      isRight: data
+    });
+  });
+
   io.sockets.emit("numberQuestion", numberQuestion);
+
   socket.emit("Number", number);
+
   socket.on("disconnect", function() {
+    io.sockets.emit("memberExit", socket.id);
+    number--;
+    if (number >= 0) {
+      io.sockets.emit("Number", number);
+    }
+
     numberQuestion = 0;
-    start = 0;
+    numberMemberAnswer = 0;
     number = 0;
-    member = [];
   });
 });
 
 app.get("/", function(req, res) {
-  res.render("index");
+  res.send("Hello");
 });
 app.get("/getdata", function(req, res) {
-  res.send(db.get("questions").value());
+  res.send(db.get("questions"));
 });

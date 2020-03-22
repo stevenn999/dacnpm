@@ -14,9 +14,10 @@ export class Box extends Component {
       questions: "",
       numberQuestion: 0,
       score: 0,
-      start: 0,
+      start: false,
       nickName: "",
-      pin: ""
+      pin: "",
+      disableAnswer: false
     };
     this.socket = null;
   }
@@ -36,12 +37,17 @@ export class Box extends Component {
     const { endpoint } = this.state;
     this.socket = openSocket(endpoint, options);
     this.socket.on("numberQuestion", data => {
-      console.log(data);
-      this.setState({ numberQuestion: data });
+      this.setState({ numberQuestion: data, disableAnswer: false });
     });
-    this.socket.on("startOk", data => {
-      if (parseInt(data)) {
+    this.socket.on("startOk", start => {
+      if (start) {
         this.getData();
+      } else {
+        this.setState({
+          start: false,
+          nickName: "",
+          pin: ""
+        });
       }
     });
   };
@@ -53,7 +59,7 @@ export class Box extends Component {
         const questions = res.data;
         this.setState({
           questions,
-          start: 1
+          start: true
         });
       })
       .catch(err => {
@@ -66,58 +72,66 @@ export class Box extends Component {
     const { questions } = this.state;
     var { numberQuestion } = this.state;
     const rightAnswer = questions[numberQuestion].rightAnswer;
-
+    this.setState({
+      disableAnswer: true
+    });
     if (numberAnswer === rightAnswer) {
-      alert("Bạn trả lời đúng rồi");
-      this.socket.emit("answer", "súng");
+      this.socket.emit("memberAnswer", true);
     } else {
-      alert("Bạn trả lời sai rồi");
-      this.socket.emit("answer", "sai");
+      this.socket.emit("memberAnswer", false);
     }
-
     if (questions.length > numberQuestion) {
       this.setState({
         numberQuestion
       });
     }
   };
+
   clickSubmit = (nickName, pin) => {
+    this.socket.emit("creatRoom", 6969);
     this.setState({
       nickName,
       pin
     });
-    if (nickName) {
+    if (nickName && pin === 6969) {
       this.socket.emit("nickName", nickName);
     }
   };
 
-  render() {
-    const { questions, numberQuestion, start, pin, nickName } = this.state;
-
-    if (pin === 6969 && nickName && start != 1) {
-      return (
-        <div className=" wrapper col-sm-8 col-lg-6 ">
-          <h1>Waiting</h1>
-        </div>
-      );
+  show = () => {
+    const {
+      questions,
+      numberQuestion,
+      start,
+      pin,
+      nickName,
+      disableAnswer
+    } = this.state;
+    if (pin === 6969 && nickName && !start) {
+      return <h1>Waiting</h1>;
     } else if (questions && start && pin === 6969) {
       return (
-        <div className=" wrapper col-sm-8 col-lg-6 ">
+        <div>
           <Question question={questions[numberQuestion].question} />
           <Img />
           <Answer
             answer={questions[numberQuestion].answer}
             clickAnswer={this.clickAnswer}
+            disable={disableAnswer}
           />
         </div>
       );
     } else {
-      return (
-        <div className=" wrapper col-sm-8 col-lg-6 ">
-          <EnterPin clickSubmit={this.clickSubmit} />
-        </div>
-      );
+      return <EnterPin clickSubmit={this.clickSubmit} />;
     }
+  };
+
+  render() {
+    return (
+      <div className="row">
+        <div className=" wrapper col-sm-8 col-lg-8 ">{this.show()}</div>
+      </div>
+    );
   }
 }
 

@@ -4,7 +4,7 @@ export class Img extends Component {
     render() {
         return (
             <div className="img">
-                
+              
             </div>
         );
     }

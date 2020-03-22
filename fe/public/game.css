@@ -1,3 +1,8 @@
+html,
+body {
+    height: 100%;
+}
+
 .wrapper {
     height: 100vh;
     margin: 0 auto;
@@ -16,18 +21,24 @@
     background: #dfded4;
     margin-top: 5%;
     margin: 5% auto;
-    height: 40%;
+    height: 40vh;
     width: 80%;
 }
 
 .answer {
-    margin-top: 5%;
-    width: 100%;
+    width: 80%;
+    margin: 10px auto
+}
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:visited,
+.btn-secondary:focus {
+    background-color: #8064A2;
+    border-color: #8064A2;
 }
 
 .enterpin {
-    width: 50%;
-    margin: 40% auto;
-    padding: 3px;
-
+    width: 30%;
+    margin: 30vh auto;
 }
+

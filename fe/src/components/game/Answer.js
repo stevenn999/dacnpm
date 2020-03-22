@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 
 export class Answer extends Component {
+ 
   onClick = index => {
     const { clickAnswer } = this.props;
-    clickAnswer(index)
+   
+    clickAnswer(index);
   };
   render() {
-    const { answer } = this.props;
+    const { answer,disable } = this.props;
+  
+
     const answers = answer.map((a, index) => {
       return (
         <button
           key={index}
-          onClick={()=>this.onClick(index)}
+          onClick={() => this.onClick(index)}
           type="button"
-          className="btn btn-secondary col-12 col-sm-6 answer"
+          disabled={disable}
+          className="btn btn-secondary col-12 col-sm-5 answer"
         >
           {a}
         </button>
