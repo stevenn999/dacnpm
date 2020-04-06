@@ -1,0 +1,12 @@
+.enterpin {
+    background-color: #cabf28;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.formEnterpin {
+    width: 30%;
+    text-align: center;
+}

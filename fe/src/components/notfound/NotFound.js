@@ -4,7 +4,7 @@ export class NotFound extends Component {
     render() {
         return (
             <div>
-               Không tìm thấy trang
+               Không tìm thấy trang bạn ơi!!!!!!!!!!!!!!!!!
             </div>
         );
     }

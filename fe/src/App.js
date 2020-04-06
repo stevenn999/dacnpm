@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter   as Router, Route, Switch } from "react-router-dom";
 
-import Box from "./components/game/Box";
-import Game from "./components/admin/Game";
+import Player from "./components/player/Player";
+import Game from "./components/host/Game";
 import NotFound from "./components/notfound/NotFound";
+import Login from "./components/accounts/Login";
+import Register from "./components/accounts/Register";
 
 export class App extends Component {
   render() {
@@ -11,10 +13,16 @@ export class App extends Component {
       <Router>
         <Switch>
           <Route path="/" exact>
-            <Box />
+            <Player />
           </Route>
-          <Route path="/playgame">
+          <Route path="/playgame" exact>
             <Game />
+          </Route>
+          <Route path="/account/login" exact>
+            <Login />
+          </Route>
+          <Route path="/account/register" exact>
+            <Register />
           </Route>
           <Route>
             <NotFound />

@@ -18,6 +18,16 @@
                 "Karik",
                 "Min"
             ]
+        },
+        {
+            "number": 3,
+            "question": "Cá không ăn muốn cá ươn,con cãi cha mẹ...?",
+            "rightAnswer": 1,
+            "answer": ["cãi lộn cát không",
+                "trăm đường con như",
+                "nhớ kẻ trồng cây",
+                "đố thầy làm nên"
+            ]
         }
     ]
 }
