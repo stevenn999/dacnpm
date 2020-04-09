@@ -31,30 +31,36 @@
     text-align: center;
 }
 
+.questionHost {
+    background-color: #cabf28;
+}
+
 .questiongame {
     background-color: #cabf28;
     height: 100vh;
 }
 
-.statistic {
-    height: 100vh;
-    padding: 10px;
-    margin: 0;
-}
-
-.nextquestion {
-  
-}
 
 .my-custom-scrollbar {
     position: relative;
     height: 60vh;
     overflow: auto;
+    
 }
 
 .table-wrapper-scroll-y {
     display: block;
 }
-.hideAudio{
-    display:none;
+
+.hideAudio {
+    display: none;
+}
+
+.timecountdown {
+    border-radius: 20px;
+    font-size: 30px;
+    text-align: center;
+    width: 250px;
+    margin: 20px auto;
+    
 }

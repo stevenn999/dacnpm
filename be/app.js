@@ -126,7 +126,7 @@ app.get("/getdata", async (req, res) => {
   res.send(questions);
 });
 app.get("/", function (req, res) {
-  res.send("Hello");
+  res.send("Hellooooo!");
 });
 
 app.use((req, res, next) => {

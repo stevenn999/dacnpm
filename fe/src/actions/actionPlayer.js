@@ -40,6 +40,13 @@ export const clickAnswer = (disableAnswer)=>{
         disableAnswer
     }
 }
+export const setTimeQuestion = (time) => {
+    return {
+      type: types.SET_TIME_QUESTION,
+      time
+    };
+  };
+  
 
 
 

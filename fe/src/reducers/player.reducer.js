@@ -6,7 +6,7 @@ var options = {
   rememberUpgrade: true,
   transports: ["websocket"],
   secure: true,
-  rejectUnauthorized: false
+  rejectUnauthorized: false,
 };
 var socket = openSocket(endPoint, options);
 
@@ -20,7 +20,8 @@ var intialState = {
   pin: "",
   arrRoom: [],
   isJoinRoom: false,
-  disableAnswer: false
+  disableAnswer: false,
+  time: 0,
 };
 
 var myReducer = (state = intialState, action) => {
@@ -47,12 +48,21 @@ var myReducer = (state = intialState, action) => {
       return { ...state };
     }
     case types.LOAD_QUESTION: {
+      state.disableAnswer = false;
       state.numberCurrentQuestion = action.numberCurrentQuestion;
-      state.disableAnswer = action.disableAnswer;
+      if (state.questions)
+        state.time = state.questions[state.numberCurrentQuestion].timeAnswer;
       return { ...state };
     }
     case types.CLICK_ANSWER: {
       state.disableAnswer = action.disableAnswer;
+      return { ...state };
+    }
+    case types.SET_TIME_QUESTION: {
+      state.time = action.time;
+      if (state.time === 0) {
+        state.disableAnswer = true;
+      }
       return { ...state };
     }
 

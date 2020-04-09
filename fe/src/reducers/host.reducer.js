@@ -19,7 +19,6 @@ var intialState = {
   members: [],
   numberCurrentQuestion: 0,
   time:0,
-  timerId:null,
 };
 var myReducer = (state = intialState, action) => {
   switch (action.type) {
@@ -37,7 +36,6 @@ var myReducer = (state = intialState, action) => {
       state.socket.emit("next", 1);
       state.numberCurrentQuestion += 1;
       state.time =state.questions[state.numberCurrentQuestion].timeAnswer;
-      state.timerId=null;
       state.numberMembersAnswer = 0;
       return { ...state };
     }

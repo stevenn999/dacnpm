@@ -10,6 +10,7 @@ import "./Player.css";
 
 export class Player extends Component {
   componentDidMount = () => {
+  
     const { socket } = this.props.player;
 
     socket.on("is_join_room", (is_join_room) => {
@@ -34,13 +35,14 @@ export class Player extends Component {
   };
 
   show = () => {
-    const { questions, start, pin, nickName, isJoinRoom } = this.props.player;
-
+    const { questions, start, pin, nickName, isJoinRoom} = this.props.player;
+  
     if (questions !== null && start && pin && isJoinRoom) {
       return (
         <div className="row">
           <div className="col-12 col-sm-8 wrapper mx-auto">
             <Question />
+           
             <Img />
             <Answer />
           </div>
@@ -65,6 +67,9 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
+    setTimeQuestion: (time) => {
+      dispatch(actions.setTimeQuestion(time));
+    },
     isJoinRoom: (isJoinRoom) => {
       dispatch(actions.isJoinRoom(isJoinRoom));
     },

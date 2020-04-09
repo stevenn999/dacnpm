@@ -3,6 +3,10 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/actionHost";
 
 export class PlayGame extends Component {
+  constructor(props) {
+    super(props);
+    this.idTimer = null;
+  }
 
   componentDidMount() {
     const { questions, numberCurrentQuestion } = this.props.host;
@@ -11,9 +15,9 @@ export class PlayGame extends Component {
     const { setTimeQuestion } = this.props;
     setTimeQuestion(t);
 
-    setInterval(() => {
+    this.idTimer = setInterval(() => {
       this.timeCountDown();
-    }, 100);
+    }, 500);
 
     const { socket } = this.props.host;
     socket.on("memberAnswer", (data) => {
@@ -41,6 +45,7 @@ export class PlayGame extends Component {
       memberAnswer(members);
     });
   }
+
   onClick = () => {
     const { numberCurrentQuestion, questions } = this.props.host;
     const { clickNextQuestion } = this.props;
@@ -51,8 +56,14 @@ export class PlayGame extends Component {
   timeCountDown = () => {
     var { time } = this.props.host;
     const { setTimeQuestion } = this.props;
-    if (time > 0) setTimeQuestion(time - 1);
+    if (time > 0) {
+      
+      setTimeQuestion(time - 1);
+    }
   };
+  componentWillUnmount(){
+    clearInterval(this.idTimer);
+  }
 
   render() {
     var {
@@ -79,42 +90,34 @@ export class PlayGame extends Component {
       );
     });
 
-    var timeCountDown=(time)=>{
+    var timeCountDown = (time) => {
       var min = 0;
       var sec = 0;
-  
+
       if (time >= 60) {
         min = time / 60;
         sec = time % 60;
         if (sec < 10) sec = "0" + sec;
-        time=min+''+sec
-      } else if (time>0){
-        min = '00';
+        time = min + "" + sec;
+      } else if (time > 0) {
+        min = "00";
         sec = time;
         if (sec < 10) sec = "0" + sec;
-        time=min+':'+sec
-      }
-      else{
-        time="Hết giờ"
+        time = min + ":" + sec;
+      } else {
+        time = "Hết giờ";
       }
       return time;
-    }
+    };
 
     return (
       <div className=" row">
-        <div className="col-12 col-lg-8  wrapper">
+        <div className="col-12 col-lg-8 questionHost">
           <h2 className="question">{question.question}</h2>
 
-          <div className="card bg-dark text-white mt-3">
-            <h3 className="card-title text-center">
-              <div className="d-flex flex-wrap justify-content-center mt-2">
-                <span className="pl-3 text-warning">Time:</span>
-                <span className="pl-3 pr-3">
-                 
-                </span>
-                
-              </div>
-            </h3>
+          <div className="bg-dark timecountdown">
+            <span className="pl-3 text-warning">Time:</span>
+            <span className="pl-3 pr-3 text-white">{timeCountDown(time)}</span>
           </div>
 
           <div className="img"></div>
@@ -133,7 +136,7 @@ export class PlayGame extends Component {
             </button>
           </div>
         </div>
-        <div className="col-12 col-lg-4 statistic">
+        <div className="col-12 col-lg-4 ">
           <h1>
             Câu hỏi số: {(numberCurrentQuestion += 1)} / {numberQuestion}
           </h1>

@@ -21,6 +21,7 @@ export class Answer extends Component {
   render() {
     const { questions, numberCurrentQuestion, disableAnswer } = this.props.player;
     const question = questions[numberCurrentQuestion];
+   
 
     return (
       <div className="answers ">
