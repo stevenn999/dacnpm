@@ -17,7 +17,7 @@ export class Questions extends Component {
 
     this.idTimer= setInterval(() => {
       this.timeCountDown();
-    }, 500);
+    }, 300);
   }
   componentWillUnmount(){
     clearInterval(this.idTimer)

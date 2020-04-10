@@ -36,12 +36,16 @@ body {
     width: 80%;
 }
 
-.answer {
+.btnAnswer {
     margin: 10px;
     background-color: #0b4e1b;
     border-radius: 20px;
     border: 2px solid #e2e48e;
     color: white;
+    font-size: 20px;
+}
+.btnAnswer:hover {
+    background-color: #e29911; 
 }
 
 

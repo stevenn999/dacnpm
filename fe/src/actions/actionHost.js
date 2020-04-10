@@ -33,7 +33,7 @@ export const memberAnswer = (members) => {
 };
 export const setTimeQuestion = (time) => {
   return {
-    type: types.SET_TIME_QUESTION,
+    type: types.SET_TIME_QUESTION_HOST,
     time
   };
 };

@@ -3,76 +3,64 @@ import * as actions from "../../actions/actionPlayer";
 import { connect } from "react-redux";
 
 export class Answer extends Component {
-
-  onClick = index => {
+  onClick = (index) => {
     const { socket, questions, numberCurrentQuestion } = this.props.player;
     const { clickAnswer } = this.props;
     const rightAnswer = questions[numberCurrentQuestion].rightAnswer;
-    clickAnswer(true);
-    if (index === rightAnswer) {
+    var {answersColor}=this.props.player;
+    answersColor[index]='text-danger';
+
+    clickAnswer(true,answersColor);
+    if (index===rightAnswer-1) {
       socket.emit("memberAnswer", true);
-      alert("Bạn trả lời đúng rồi");
     } else {
       socket.emit("memberAnswer", false);
-      alert("Bạn trả lời sai rồi");
     }
   };
-  
-  render() {
-    const { questions, numberCurrentQuestion, disableAnswer } = this.props.player;
-    const question = questions[numberCurrentQuestion];
-   
 
-    return (
-      <div className="answers ">
+  render() {
+    const {
+      questions,
+      numberCurrentQuestion,
+      disableAnswer,
+      answersColor,
+      answersBackgroundColor
+    } = this.props.player;
+    const question = questions[numberCurrentQuestion];
+    const arr = [];
+    arr.push(question.answer1);
+    arr.push(question.answer2);
+    arr.push(question.answer3);
+    arr.push(question.answer4);
+
+    const answers = arr.map(( answer,index) => {
+      return (
         <button
-          onClick={() => this.onClick(1)}
+          key={index}
+          onClick={() => this.onClick(index)}
           type="button"
           disabled={disableAnswer}
-          className="btn btn-success  col-10 col-sm-5 answer"
+          className={ `col-10 col-sm-5 btnAnswer ${answersColor[index]}  ${answersBackgroundColor[index]} `}
         >
-          {question.answer1}
+          {answer}
         </button>
-        <button
-          onClick={() => this.onClick(2)}
-          type="button"
-          disabled={disableAnswer}
-          className="btn btn-success col-10 col-sm-5 answer"
-        >
-          {question.answer2}
-        </button>
-        <button
-          onClick={() => this.onClick(3)}
-          type="button"
-          disabled={disableAnswer}
-          className="btn btn-success col-10 col-sm-5 answer"
-        >
-          {question.answer3}
-        </button>
-        <button
-          onClick={() => this.onClick(4)}
-          type="button"
-          disabled={disableAnswer}
-          className="btn btn btn-success col-10 col-sm-5 answer"
-        >
-          {question.answer4}
-        </button>
-      </div>
-    );
+      );
+    });
+    return <div className="answers ">{answers}</div>;
   }
 }
 
-const mapStatetoProps = state => {
+const mapStatetoProps = (state) => {
   return {
-    player: state.player
+    player: state.player,
   };
 };
 
 const mapDispathToProps = (dispatch, props) => {
   return {
-    clickAnswer: disableAnswer => {
-      dispatch(actions.clickAnswer(disableAnswer));
-    }
+    clickAnswer: (disableAnswer,answersColor) => {
+      dispatch(actions.clickAnswer(disableAnswer,answersColor));
+    },
   };
 };
 export default connect(mapStatetoProps, mapDispathToProps)(Answer);

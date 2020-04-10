@@ -28,6 +28,7 @@ export class App extends Component {
             <NotFound />
           </Route>
         </Switch>
+        
       </Router>
     );
   }

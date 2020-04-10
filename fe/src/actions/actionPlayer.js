@@ -34,15 +34,16 @@ export const loadQuestion = (numberCurrentQuestion,disableAnswer)=>{
         disableAnswer
     }
 }
-export const clickAnswer = (disableAnswer)=>{
+export const clickAnswer = (disableAnswer,answersColor)=>{
     return{
         type:types.CLICK_ANSWER,
-        disableAnswer
+        disableAnswer,
+        answersColor 
     }
 }
 export const setTimeQuestion = (time) => {
     return {
-      type: types.SET_TIME_QUESTION,
+      type: types.SET_TIME_QUESTION_PLAYER,
       time
     };
   };

@@ -22,6 +22,8 @@ var intialState = {
   isJoinRoom: false,
   disableAnswer: false,
   time: 0,
+  answersColor: ["", "", "", ""],
+  answersBackgroundColor: ["", "", "", ""],
 };
 
 var myReducer = (state = intialState, action) => {
@@ -49,6 +51,8 @@ var myReducer = (state = intialState, action) => {
     }
     case types.LOAD_QUESTION: {
       state.disableAnswer = false;
+      state.answersColor = ["", "", "", ""];
+      state.answersBackgroundColor = ["", "", "", ""];
       state.numberCurrentQuestion = action.numberCurrentQuestion;
       if (state.questions)
         state.time = state.questions[state.numberCurrentQuestion].timeAnswer;
@@ -56,11 +60,16 @@ var myReducer = (state = intialState, action) => {
     }
     case types.CLICK_ANSWER: {
       state.disableAnswer = action.disableAnswer;
+      state.answersColor = action.answersColor;
       return { ...state };
     }
-    case types.SET_TIME_QUESTION: {
+    case types.SET_TIME_QUESTION_PLAYER: {
       state.time = action.time;
+
       if (state.time === 0) {
+        var rightAnswer =
+          state.questions[state.numberCurrentQuestion].rightAnswer;
+        state.answersBackgroundColor[rightAnswer - 1] = "bg-success";
         state.disableAnswer = true;
       }
       return { ...state };

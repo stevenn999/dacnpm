@@ -6,11 +6,11 @@ var options = {
   rememberUpgrade: true,
   transports: ["websocket"],
   secure: true,
-  rejectUnauthorized: false
+  rejectUnauthorized: false,
 };
 var socket = openSocket(endPoint, options);
 
-var intialState = {
+var initState = {
   socket: socket,
   pin: Math.floor(Math.random() * 10000) + 1,
   startPlay: false,
@@ -18,9 +18,10 @@ var intialState = {
   numberMembersAnswer: 0,
   members: [],
   numberCurrentQuestion: 0,
-  time:0,
+  time: 0,
+  answersBackgroundColor: ["", "", "", ""],
 };
-var myReducer = (state = intialState, action) => {
+var myReducer = (state = initState, action) => {
   switch (action.type) {
     case types.SAVE_NEW_MEMBER: {
       state.members.push(action.newMember);
@@ -35,7 +36,8 @@ var myReducer = (state = intialState, action) => {
     case types.CLICK_NEXT_QUESTION: {
       state.socket.emit("next", 1);
       state.numberCurrentQuestion += 1;
-      state.time =state.questions[state.numberCurrentQuestion].timeAnswer;
+      state.answersBackgroundColor = ["", "", "", ""];
+      state.time = state.questions[state.numberCurrentQuestion].timeAnswer;
       state.numberMembersAnswer = 0;
       return { ...state };
     }
@@ -46,15 +48,20 @@ var myReducer = (state = intialState, action) => {
     }
 
     case types.MEMBER_ANSWER: {
-      state.numberMembersAnswer+=1;
+      state.numberMembersAnswer += 1;
       state.members = action.members;
       return { ...state };
     }
-    case types.SET_TIME_QUESTION: {
-      state.time=action.time;
+    case types.SET_TIME_QUESTION_HOST: {
+      state.time = action.time;
+      if (state.time === 0) {
+        var rightAnswer =
+          state.questions[state.numberCurrentQuestion].rightAnswer;
+        state.answersBackgroundColor[rightAnswer - 1] = "bg-success";
+      }
       return { ...state };
     }
-    
+
     default:
       return { ...state };
   }

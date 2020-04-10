@@ -17,12 +17,14 @@ export class PlayGame extends Component {
 
     this.idTimer = setInterval(() => {
       this.timeCountDown();
-    }, 500);
+    }, 300);
 
     const { socket } = this.props.host;
     socket.on("memberAnswer", (data) => {
+      const { questions, numberCurrentQuestion } = this.props.host;
       const { members } = this.props.host;
       const { memberAnswer } = this.props;
+      const score = questions[numberCurrentQuestion].score;
       if (data.isRight) {
         const index = members.findIndex((m) => m.id === data.id);
 
@@ -30,7 +32,7 @@ export class PlayGame extends Component {
           id: members[index].id,
           nickName: members[index].nickName,
           rightQuestion: members[index].rightQuestion + 1,
-          score: members[index].score + 100,
+          score: members[index].score + score,
         };
         members.sort(function (a, b) {
           if (a.score > b.score) {
@@ -57,11 +59,10 @@ export class PlayGame extends Component {
     var { time } = this.props.host;
     const { setTimeQuestion } = this.props;
     if (time > 0) {
-      
       setTimeQuestion(time - 1);
     }
   };
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.idTimer);
   }
 
@@ -72,8 +73,10 @@ export class PlayGame extends Component {
       numberMembersAnswer,
       members,
       time,
+      answersBackgroundColor,
     } = this.props.host;
     const question = questions[numberCurrentQuestion];
+    const score = questions[numberCurrentQuestion].score;
     const numberQuestion = questions.length;
     const numberMembers = members.length;
 
@@ -87,6 +90,23 @@ export class PlayGame extends Component {
             <td>{member.score}</td>
           </tr>
         </tbody>
+      );
+    });
+    const arr = [];
+    arr.push(question.answer1);
+    arr.push(question.answer2);
+    arr.push(question.answer3);
+    arr.push(question.answer4);
+
+    const answers = arr.map((answer, index) => {
+      return (
+        <button
+          key={index}
+          type="button"
+          className={`col-10 col-sm-5 btnAnswer ${answersBackgroundColor[index]} `}
+        >
+          {answer}
+        </button>
       );
     });
 
@@ -114,27 +134,22 @@ export class PlayGame extends Component {
       <div className=" row">
         <div className="col-12 col-lg-8 questionHost">
           <h2 className="question">{question.question}</h2>
-
-          <div className="bg-dark timecountdown">
-            <span className="pl-3 text-warning">Time:</span>
-            <span className="pl-3 pr-3 text-white">{timeCountDown(time)}</span>
+          <div className="row">
+            <div className="bg-dark timecountdown">
+              <span className="pl-3 text-warning">Time:</span>
+              <span className="pl-3 pr-3 text-white">
+                {timeCountDown(time)}
+              </span>
+            </div>
+            <div className="bg-dark timecountdown">
+              <span className="pl-3 text-warning">Score:</span>
+              <span className="pl-3 pr-3 text-white">{score}</span>
+            </div>
           </div>
 
           <div className="img"></div>
-          <div className="answers">
-            <button className="btn btn-success col-10 col-sm-5 answer">
-              {question.answer1}
-            </button>
-            <button className="btn btn-success col-10 col-sm-5 answer">
-              {question.answer2}
-            </button>
-            <button className="btn btn-success col-10 col-sm-5 answer">
-              {question.answer3}
-            </button>
-            <button className="btn btn-success col-10 col-sm-5 answer">
-              {question.answer4}
-            </button>
-          </div>
+
+          <div className="answers">{answers}</div>
         </div>
         <div className="col-12 col-lg-4 ">
           <h1>
