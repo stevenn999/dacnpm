@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter   as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Player from "./components/player/Player";
 import Game from "./components/host/Game";
@@ -18,17 +18,16 @@ export class App extends Component {
           <Route path="/playgame" exact>
             <Game />
           </Route>
-          <Route path="/account/login" exact>
+          <Route path="/login" exact>
             <Login />
           </Route>
-          <Route path="/account/register" exact>
+          <Route path="/register" exact>
             <Register />
           </Route>
           <Route>
             <NotFound />
           </Route>
         </Switch>
-        
       </Router>
     );
   }

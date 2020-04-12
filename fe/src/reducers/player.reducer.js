@@ -1,5 +1,5 @@
 import * as types from "../constants/ActionTypes";
-import { endPoint } from "../const";
+import { endPoint } from "../constants/endPoint";
 import openSocket from "socket.io-client";
 
 var options = {
@@ -10,7 +10,7 @@ var options = {
 };
 var socket = openSocket(endPoint, options);
 
-var intialState = {
+var initState = {
   socket: socket,
   questions: null,
   numberCurrentQuestion: 0,
@@ -26,7 +26,7 @@ var intialState = {
   answersBackgroundColor: ["", "", "", ""],
 };
 
-var myReducer = (state = intialState, action) => {
+var myReducer = (state = initState, action) => {
   switch (action.type) {
     case types.CLICK_SUBMIT_PIN: {
       state.socket.emit("join_room", action.pin);

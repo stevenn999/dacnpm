@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/actionHost";
 import axios from "axios";
-import { endPointDataQuestion } from "../../const";
-import music from "./backgroundaudio.mp3"
+import { endPointDataQuestion } from "../../constants/endPoint";
+import music from "./backgroundaudio.mp3";
 
 export class PreparePlayGame extends Component {
   componentDidMount() {
@@ -28,8 +28,11 @@ export class PreparePlayGame extends Component {
   onClick = async () => {
     const { socket } = this.props.host;
     const { clickStartGame } = this.props;
+    const token=localStorage.getItem("token")
     socket.emit("start", true);
-    const questions = await axios.get(endPointDataQuestion);
+    const questions = await axios.get(endPointDataQuestion, {
+      headers: { "x-access-token": `${token}` },
+    });
     socket.emit("questions", questions.data);
     clickStartGame(true, questions.data);
   };

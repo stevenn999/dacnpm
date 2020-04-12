@@ -1,8 +1,43 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link,Redirect,withRouter  } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../../actions/actionLogin";
+import { urlLogin } from "../../constants/endPoint";
+import axios from "axios";
 import "./Login.css";
+
 class Login extends Component {
+
+
+  onchange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    let { account } = this.props.login;
+    let { onChange } = this.props;
+    account = {
+      ...account,
+      [name]: value,
+    };
+    onChange(account);
+  };
+
+  onclick = () => {
+    const { account } = this.props.login;
+    axios.post(urlLogin, account).then((res) => {
+      if (res.data.failLogin) alert(JSON.stringify(res.data.failLogin));
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        this.props.history.push("/playgame")
+      }
+    });
+  };
+
+
   render() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return <Redirect to="/playgame" />;
+    }
     return (
       <div className="background p-5">
         <div className="container">
@@ -18,21 +53,21 @@ class Login extends Component {
                   <div className="form-label-group">
                     <input
                       type="text"
-                      id="inputUserame"
-                      name="username"
+                      id="inputUsername"
+                      name="userName"
                       className="form-control"
                       placeholder="Username"
                       autoFocus
                       onChange={this.onchange}
                     />
-                    <label htmlFor="inputUserame">Username</label>
+                    <label htmlFor="inputUsername">Username</label>
                   </div>
 
                   <div className="form-label-group">
                     <input
                       type="password"
                       id="inputPassword"
-                      name="password"
+                      name="passWord"
                       className="form-control"
                       placeholder="Password"
                       onChange={this.onchange}
@@ -72,14 +107,18 @@ class Login extends Component {
                     className="btn btn-lg btn-google btn-block text-uppercase"
                     type="submit"
                   >
-                    <i className="fab mr-2"></i> Sign in with Google
+                    <i className="fa fa-google" aria-hidden="true"></i> Sign in
+                    with Google
                   </button>
                   <button
                     className="btn btn-facebook btn-block text-uppercase"
                     type="submit"
                   >
-                    <i className="fab fa-facebook-f mr-2"></i> Sign in with
-                    Facebook
+                    <i
+                      className="fa fa-facebook-official"
+                      aria-hidden="true"
+                    ></i>{" "}
+                    Sign in with Facebook
                   </button>
                 </form>
               </div>
@@ -91,4 +130,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStatetoProps = (state) => {
+  return {
+    login: state.login,
+  };
+};
+
+const mapDispathToProps = (dispatch, props) => {
+  return {
+    onChange: (account) => {
+      dispatch(actions.onChange(account));
+    },
+  };
+};
+export default withRouter(connect(mapStatetoProps, mapDispathToProps) (Login));

@@ -1,8 +1,54 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link,Redirect  } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../../actions/actionRegister";
+import { urlRegister } from "../../constants/endPoint";
+import axios from "axios";
 import "./Login.css";
 class Register extends Component {
+
+
+  accountInvalid = (account) => {
+    if (
+      account.userName != null &&
+      account.fullName != null &&
+      account.email != null &&
+      account.confirmPassword != null &&
+      account.passWord === account.confirmPassword
+    )
+      return true;
+    return false;
+  };
+
+  onclick = () => {
+    const { account } = this.props.register;
+    const acc={...account}
+    if (this.accountInvalid(account)) {
+      delete acc.confirmPassword;
+      axios.post(urlRegister, acc).then((res) => {
+        alert(res.data);
+      });
+    } else {
+      alert("Bạn phải điền đầy đủ thông tin");
+    }
+  };
+  onchange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    let { account } = this.props.register;
+    let { onChange } = this.props;
+    account = {
+      ...account,
+      [name]: value,
+    };
+    onChange(account);
+  };
+
   render() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return <Redirect to="/playgame" />;
+    }
     return (
       <div className="background p-1">
         <div className="container">
@@ -11,14 +57,14 @@ class Register extends Component {
               <div className="card-body">
                 <form className="form-signin" method="POST" id="loginForm">
                   <img
-                    src="https://lh3.googleusercontent.com/proxy/2yUY8bRd1oKOJgSpD5uCEOuYIOlIFWkTdlubvxfJ5K7v-9sW6Idy0aCdaAd8OQhvsgvCERwz7SAAGFFDAyqNmTiMhtKgdka-TYrK_3IXsuVeIQK0-ZlOYSJ9dF9SIH_WRA"
+                    src="https://www.pngmart.com/files/3/Register-Button-Transparent-Background.png"
                     className="card-img  mb-5"
                     alt=""
                   />
                   <div className="form-label-group">
                     <input
                       type="text"
-                      name="username"
+                      name="userName"
                       id="inputUsername"
                       className="form-control"
                       placeholder="Username"
@@ -30,7 +76,7 @@ class Register extends Component {
                   <div className="form-label-group">
                     <input
                       type="text"
-                      name="fullname"
+                      name="fullName"
                       id="inputFullname"
                       className="form-control"
                       placeholder="Full name"
@@ -53,7 +99,7 @@ class Register extends Component {
                   <div className="form-label-group">
                     <input
                       type="password"
-                      name="password"
+                      name="passWord"
                       id="inputPassword"
                       className="form-control"
                       placeholder="Password"
@@ -64,7 +110,7 @@ class Register extends Component {
                   <div className="form-label-group">
                     <input
                       type="password"
-                      name="confirmpassword"
+                      name="confirmPassword"
                       id="inputConfirmPassword"
                       className="form-control"
                       placeholder="Password"
@@ -94,7 +140,7 @@ class Register extends Component {
                     type="button"
                     onClick={this.onclick}
                   >
-                    Login
+                    Register
                   </button>
 
                   <Link className="d-block text-center mt-2 small" to="./login">
@@ -105,13 +151,18 @@ class Register extends Component {
                     className="btn btn-lg btn-google btn-block text-uppercase"
                     type="submit"
                   >
-                    <i className="fab mr-2"></i> Sign in with Google
+                    <i className="fa fa-google" aria-hidden="true"></i> Sign in
+                    with Google
                   </button>
                   <button
                     className="btn btn-lg btn-facebook btn-block text-uppercase"
                     type="submit"
                   >
-                    <i className="fab  mr-2"></i> Sign in with Facebook
+                    <i
+                      className="fa fa-facebook-official"
+                      aria-hidden="true"
+                    ></i>{" "}
+                    Sign in with Facebook
                   </button>
                 </form>
               </div>
@@ -122,5 +173,17 @@ class Register extends Component {
     );
   }
 }
+const mapStatetoProps = (state) => {
+  return {
+    register: state.register,
+  };
+};
 
-export default Register;
+const mapDispathToProps = (dispatch, props) => {
+  return {
+    onChange: (account) => {
+      dispatch(actions.onChange(account));
+    },
+  };
+};
+export default connect(mapStatetoProps, mapDispathToProps)(Register);

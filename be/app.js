@@ -1,9 +1,8 @@
 const express = require("express");
-const exphbs = require("express-handlebars");
-const path = require("path");
 const app = express();
+const cors = require('cors');
 require("express-async-errors");
-const questions_module = require("./models/questions.model");
+const auth=require("./middleware/auth")
 
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
@@ -11,29 +10,12 @@ server.listen(process.env.PORT || 8000, () => {
   console.log("Listing port 8000");
 });
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
 
-app.engine(
-  ".hbs",
-  exphbs({
-    layoutsDir: "./views/",
-    defaultLayout: "index",
-    extname: ".hbs",
-  })
-);
-
-app.use(express.static("public"));
-//Set view
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", ".hbs");
+app.use(cors());
+app.use(express.json());
 
 var arrRoom = [];
-
+//socket io
 io.on("connection", function (socket) {
   console.log("CÓ người kết nối");
   //Host Tạo Room
@@ -121,14 +103,15 @@ io.on("connection", function (socket) {
     }
   });
 });
-app.get("/getdata", async (req, res) => {
-  const questions = await questions_module.all();
-  res.send(questions);
-});
+
+//router
 app.get("/", function (req, res) {
-  res.send("Hellooooo!");
+  res.send("Hello!");
 });
 
+app.use('/api/questions',auth,require('./routes/questions.route'))
+app.use('/api/account',require('./routes/accounts.route'))
+//catch error
 app.use((req, res, next) => {
   res.status(404).send("NOT FOUND");
 });

@@ -7,8 +7,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #007bff;
-    background: linear-gradient(to right, #0062E6, #33AEFF);
+    background: #cabf28;
+    background: linear-gradient(to right, #cabf28,  #99e60acc);
 }
 .card-img {
     height: 50px;
