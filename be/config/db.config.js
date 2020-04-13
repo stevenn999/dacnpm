@@ -1,9 +1,9 @@
 module.exports = {
+  USER: "2NQTgvO8wC",
+  DB: "2NQTgvO8wC",
+  PASSWORD: "75TeN3WimN",
   HOST: "remotemysql.com",
-  USER: "zhcmA74fFb",
-  PASSWORD: "UeXStmpZpD",
-  DB: "zhcmA74fFb",
-  PORT: 3306,
+  Port: 3306,
   dialect: "mysql",
   pool: {
     max: 10,

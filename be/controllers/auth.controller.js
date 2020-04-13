@@ -1,25 +1,32 @@
 const db = require("../models");
 const config = require("../config/auth.config");
-const User = db.user;
+const Account = db.account;
 const LocalCredential = db.localCredential;
 const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
-
+const generateId = require('../utils/generateId');
 exports.signup = async (req, res) => {
-  // Save User to Database
+  // Save Account to Database
   try{
-    const newUser = await User.create({
-      username: req.body.username
-    });
-  
-    const newCredential = await LocalCredential.create({
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 8)
-    });
+    // await LocalCredential.create({
+    //   email: req.body.email,
+    //   password: bcrypt.hashSync(req.body.password, 8),
+    //   account:{
+    //     username: req.body.username
+    //   }
+    // }, {include: [Account]});
 
-    await newUser.setLocalCredential(newCredential);
-    res.send({ message: "User registered successfully!" });
+    await Account.create({
+      id: generateId(),
+      username: req.body.username,
+      localCredential: {
+        id: generateId(),
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8)
+      }
+    }, {include: [LocalCredential]});
+    res.send({ message: "Account registered successfully!" });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -27,19 +34,29 @@ exports.signup = async (req, res) => {
 
 exports.signin = async (req, res) => {
   try{
-    const user = await User.findOne({
+    const account = await Account.findOne({
       where: {
         username: req.body.username
       }
     });
-  
-    if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+
+    if (!account) {
+      return res.status(404).send({ message: "Account Not found." });
     }
-  
+
+    const credential = await LocalCredential.findOne({
+      where: {
+        id: account.localCredentialId
+      }
+    });
+
+    if (!credential) {
+      return res.status(404).send({ message: "Account Not found." });
+    }
+
     var passwordIsValid = bcrypt.compareSync(
       req.body.password,
-      user.password
+      credential.password
     );
   
     if (!passwordIsValid) {
@@ -49,23 +66,16 @@ exports.signin = async (req, res) => {
       });
     }
   
-    var token = jwt.sign({ id: user.id }, config.secret, {
+    var token = jwt.sign({ id: account.id }, config.secret, {
       expiresIn: 86400 // 24 hours
     });
     
-    var authorities = [];
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        authorities.push("ROLE_" + roles[i].name.toUpperCase());
-      }
-      res.status(200).send({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        roles: authorities,
-        accessToken: token
-      });
-    });   
+    res.status(200).send({
+      id: account.id,
+      username: account.username,
+      email: credential.email,
+      accessToken: token
+    });
   } catch(err) {
     res.status(500).send({ message: err.message });
   };

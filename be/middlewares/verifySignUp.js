@@ -1,36 +1,36 @@
 const db = require("../models");
-const USER = db.user;
+const Account = db.account;
+const LocalCredential = db.localCredential;
 
-checkDuplicateUsernameOrEmail = (req, res, next) => {
+checkDuplicateUsernameOrEmail = async (req, res, next) => {
   // Username
-  User.findOne({
+  var account = await Account.findOne({
     where: {
       username: req.body.username
     }
-  }).then(user => {
-    if (user) {
-      res.status(400).send({
-        message: "Failed! Username is already in use!"
-      });
-      return;
-    }
-
-    // Email
-    User.findOne({
-      where: {
-        email: req.body.email
-      }
-    }).then(user => {
-      if (user) {
-        res.status(400).send({
-          message: "Failed! Email is already in use!"
-        });
-        return;
-      }
-
-      next();
-    });
   });
+
+  if (account) {
+    res.status(400).send({
+      message: "Failed! Username is already in use!"
+    });
+    return;
+  }
+
+  account = await LocalCredential.findOne({
+    where: {
+      email: req.body.email
+    }
+  });
+
+  if (account) {
+    res.status(400).send({
+      message: "Failed! Email is already in use!"
+    });
+    return;
+  }
+
+  next();
 };
 
 const verifySignUp = {
