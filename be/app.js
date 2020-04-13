@@ -1,10 +1,15 @@
 const express = require("express");
-const exphbs = require("express-handlebars");
 const path = require("path");
+const bodyParser = require("body-parser");
 const app = express();
+const db = require("./app/models");
 require("express-async-errors");
 const questions_module = require("./models/questions.model");
 
+db.sequelize.sync({force: true}).then(() => {
+  console.log('Drop and Resync Db');
+  initial();
+});
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
 server.listen(process.env.PORT || 8000, () => {
@@ -18,19 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.engine(
-  ".hbs",
-  exphbs({
-    layoutsDir: "./views/",
-    defaultLayout: "index",
-    extname: ".hbs",
-  })
-);
-
-app.use(express.static("public"));
-//Set view
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", ".hbs");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var arrRoom = [];
 

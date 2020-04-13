@@ -1,0 +1,43 @@
+const config = require("../config/db.config");
+const Sequelize = require("sequelize");
+
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize(
+  config.DB,
+  config.USER,
+  config.PASSWORD,
+  {
+    host: config.HOST,
+    dialect: config.dialect,
+    operatorsAliases: false,
+
+    pool: {
+      max: config.pool.max,
+      min: config.pool.min,
+      acquire: config.pool.acquire,
+      idle: config.pool.idle
+    }
+  }
+);
+
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+db.user = require("../models/user.model.js")(sequelize, Sequelize);
+db.localCredential = require("../models/local-cred.model")(sequelize, Sequelize);
+
+db.user.belongTo(db.localCredential, {
+  throught: "user_credential",
+  foreignKey: "credentialId",
+  otherKey: "userId"
+});
+
+db.localCredential.belongTo(db.user, {
+  throught: "user_credential",
+  foreignKey: "userId",
+  otherKey: "credentialId"
+});
+
+module.exports = db;
