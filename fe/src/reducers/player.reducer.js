@@ -2,20 +2,13 @@ import * as types from "../constants/ActionTypes";
 import { endPoint } from "../constants/endPoint";
 import openSocket from "socket.io-client";
 
-var options = {
-  rememberUpgrade: true,
-  transports: ["websocket"],
-  secure: true,
-  rejectUnauthorized: false,
-};
-var socket = openSocket(endPoint, options);
-
 var initState = {
-  socket: socket,
+  socket: null,
   questions: null,
   numberCurrentQuestion: 0,
   score: 0,
   start: false,
+  members: [],
   nickName: "",
   pin: "",
   arrRoom: [],
@@ -28,16 +21,31 @@ var initState = {
 
 var myReducer = (state = initState, action) => {
   switch (action.type) {
+    case types.CONNECT_SOCKET_IO_PLAYER: {
+      const options = {
+        rememberUpgrade: true,
+        transports: ["websocket"],
+        secure: true,
+        rejectUnauthorized: false,
+      };
+      const socket = openSocket(endPoint, options);
+
+      state.socket = socket;
+      return { ...state };
+    }
+
     case types.CLICK_SUBMIT_PIN: {
       state.socket.emit("join_room", action.pin);
-      state.socket.emit("nickName", action.nickName);
       state.pin = action.pin;
       state.nickName = action.nickName;
-
       return { ...state };
     }
     case types.IS_JOIN_ROOM: {
       state.isJoinRoom = action.isJoinRoom;
+      return { ...state };
+    }
+    case types.SAVE_NEW_MEMBER_PLAYER: {
+      state.members.push(action.newMember);
       return { ...state };
     }
 
@@ -67,9 +75,13 @@ var myReducer = (state = initState, action) => {
       state.time = action.time;
 
       if (state.time === 0) {
-        var rightAnswer =
-          state.questions[state.numberCurrentQuestion].rightAnswer;
-        state.answersBackgroundColor[rightAnswer - 1] = "bg-success";
+        var rightAnswers = state.questions[
+          state.numberCurrentQuestion
+        ].rightAnswers.split(",");
+        rightAnswers.forEach((rightAnswer) => {
+          state.answersBackgroundColor[parseInt(rightAnswer) - 1] =
+            "bg-success";
+        });
         state.disableAnswer = true;
       }
       return { ...state };

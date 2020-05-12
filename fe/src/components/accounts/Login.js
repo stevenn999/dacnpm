@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { Link,Redirect,withRouter  } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../../actions/actionLogin";
 import { urlLogin } from "../../constants/endPoint";
 import axios from "axios";
+import Google from "./Google";
+import Facebook from "./Facebook";
 import "./Login.css";
 
 class Login extends Component {
-
-
   onchange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -27,16 +27,15 @@ class Login extends Component {
       if (res.data.failLogin) alert(JSON.stringify(res.data.failLogin));
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-        this.props.history.push("/playgame")
+        this.props.history.push("/home");
       }
     });
   };
 
-
   render() {
     const token = localStorage.getItem("token");
     if (token) {
-      return <Redirect to="/playgame" />;
+      return <Redirect to="/home" />;
     }
     return (
       <div className="background p-5">
@@ -97,29 +96,15 @@ class Login extends Component {
                   </button>
 
                   <Link
+                    replace
                     className="d-block text-center mt-2 small"
                     to="./register"
                   >
                     Register
                   </Link>
                   <hr className="mt-5" />
-                  <button
-                    className="btn btn-lg btn-google btn-block text-uppercase"
-                    type="submit"
-                  >
-                    <i className="fa fa-google" aria-hidden="true"></i> Sign in
-                    with Google
-                  </button>
-                  <button
-                    className="btn btn-facebook btn-block text-uppercase"
-                    type="submit"
-                  >
-                    <i
-                      className="fa fa-facebook-official"
-                      aria-hidden="true"
-                    ></i>{" "}
-                    Sign in with Facebook
-                  </button>
+                  <Google />
+                  <Facebook />
                 </form>
               </div>
             </div>
@@ -143,4 +128,4 @@ const mapDispathToProps = (dispatch, props) => {
     },
   };
 };
-export default withRouter(connect(mapStatetoProps, mapDispathToProps) (Login));
+export default withRouter(connect(mapStatetoProps, mapDispathToProps)(Login));

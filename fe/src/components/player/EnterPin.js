@@ -9,7 +9,7 @@ export class EnterPin extends Component {
     var nickName = document.getElementById("nickName").value;
     var pin = document.getElementById("pin").value;
     const { clickSubmitPin } = this.props;
-    clickSubmitPin(nickName, parseInt(pin));
+    clickSubmitPin(nickName,parseInt(pin));
   };
   render() {
     

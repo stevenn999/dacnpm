@@ -7,6 +7,12 @@ import music from "./backgroundaudio.mp3";
 
 export class PreparePlayGame extends Component {
   componentDidMount() {
+    //Kết nối Host với SocketIo
+    const { connectSocketIoHost } = this.props;
+    connectSocketIoHost();
+    //Load câu hỏi từ database lưu về state host
+    this.loadQuestions();
+
     const { socket, pin } = this.props.host;
 
     socket.emit("creat_room", pin);
@@ -15,33 +21,53 @@ export class PreparePlayGame extends Component {
       const { saveNewMember } = this.props;
       saveNewMember(newMember);
     });
+    
 
     socket.on("memberExit", (data) => {
       var { members } = this.props.host;
-      const index = members.findIndex((m) => m.id === data.id);
-      members.splice(index, 1);
-      const { memberExit } = this.props;
-      memberExit(members);
+      let index = members.findIndex((m) => m.nickName === data);
+      if (index > -1) {
+        members.splice(index, 1);
+        const { memberExit } = this.props;
+        memberExit(members);
+      }
     });
   }
 
-  onClick = async () => {
-    const { socket } = this.props.host;
-    const { clickStartGame } = this.props;
-    const token=localStorage.getItem("token")
-    socket.emit("start", true);
+  loadQuestions = async () => {
+    const { getQuestions } = this.props;
+    const token = localStorage.getItem("token");
     const questions = await axios.get(endPointDataQuestion, {
       headers: { "x-access-token": `${token}` },
     });
-    socket.emit("questions", questions.data);
-    clickStartGame(true, questions.data);
+    console.log( JSON.parse(questions.data[0].test+'').answer1 )
+    getQuestions(questions.data);
   };
+
+  onClick = async () => {
+    const { socket, questions } = this.props.host;
+    const { clickStartGame } = this.props;
+    socket.emit("start", true);
+    socket.emit("questions", questions);
+    clickStartGame(true);
+  };
+
+  leaveRoom = (id) => {
+    const { socket } = this.props.host;
+    socket.emit("leave_room", id);
+  };
+
   render() {
     const { members, pin } = this.props.host;
     const numberMember = members.length;
     var showMembers = members.map((member, index) => {
       return (
-        <button type="button" key={index} className="btn btn-danger member ">
+        <button
+          type="button"
+          key={index}
+          onClick={() => this.leaveRoom(member.id)}
+          className="btn btn-danger member "
+        >
           {member.nickName} <i className="fa fa-times" aria-hidden="true"></i>
         </button>
       );
@@ -77,8 +103,14 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
-    clickStartGame: (playStart, questions) => {
-      dispatch(actions.clickStartGame(playStart, questions));
+    connectSocketIoHost: () => {
+      dispatch(actions.connectSocketIoHost());
+    },
+    getQuestions: (questions) => {
+      dispatch(actions.getQuestions(questions));
+    },
+    clickStartGame: (playStart) => {
+      dispatch(actions.clickStartGame(playStart));
     },
     saveNewMember: (newMember) => {
       dispatch(actions.saveNewMember(newMember));

@@ -1,10 +1,24 @@
 import * as types from "../constants/ActionTypes"
 
+export const connectSocketIoPlayer = () => {
+    return {
+      type: types.CONNECT_SOCKET_IO_PLAYER
+    };
+  };
+
+
 export const submitPIN = (nickName,pin)=>{
     return{
         type:types.CLICK_SUBMIT_PIN,
         nickName,
         pin
+    }
+}
+
+export const saveNewMember = (newMember)=>{
+    return{
+        type:types.SAVE_NEW_MEMBER_PLAYER,
+        newMember
     }
 }
 

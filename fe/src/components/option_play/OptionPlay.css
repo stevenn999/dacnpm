@@ -1,0 +1,25 @@
+.box-option-game {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(134, 76, 191);
+}
+
+.option-game {
+    width: 40%;
+    height: 25%;  
+}
+.option-score {
+    width: 40%;
+    height: 35%;
+}
+
+.option {
+    width: 60%;
+    margin: auto;
+    text-align: left;
+    margin-top: 10px;
+}
+

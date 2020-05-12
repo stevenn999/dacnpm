@@ -2,33 +2,45 @@ import * as types from "../constants/ActionTypes";
 import { endPoint } from "../constants/endPoint";
 import openSocket from "socket.io-client";
 
-var options = {
-  rememberUpgrade: true,
-  transports: ["websocket"],
-  secure: true,
-  rejectUnauthorized: false,
-};
-var socket = openSocket(endPoint, options);
-
 var initState = {
-  socket: socket,
-  pin: Math.floor(Math.random() * 10000) + 1,
+  socket: null,
+  pin: Math.floor(Math.random() * 1000000) + 1,
   startPlay: false,
   questions: [],
   numberMembersAnswer: 0,
   members: [],
+  membersBeforeTimeOut: [],
   numberCurrentQuestion: 0,
   time: 0,
   answersBackgroundColor: ["", "", "", ""],
 };
 var myReducer = (state = initState, action) => {
   switch (action.type) {
+    case types.CONNECT_SOCKET_IO_HOST: {
+      const options = {
+        rememberUpgrade: true,
+        transports: ["websocket"],
+        secure: true,
+        rejectUnauthorized: false,
+      };
+      const socket = openSocket(endPoint, options);
+      state.socket = socket;
+      return { ...state };
+    }
     case types.SAVE_NEW_MEMBER: {
       state.members.push(action.newMember);
       return { ...state };
     }
+    case types.MEMBER_BEFORE_TIME_OUT: {
+      state.membersBeforeTimeOut = action.membersBeforeTimeOut;
+      return { ...state };
+    }
     case types.CLICK_START_PLAY: {
       state.startPlay = action.startPlay;
+      return { ...state };
+    }
+
+    case types.GET_QUESTION: {
       state.questions = [...action.questions];
       return { ...state };
     }
@@ -55,9 +67,12 @@ var myReducer = (state = initState, action) => {
     case types.SET_TIME_QUESTION_HOST: {
       state.time = action.time;
       if (state.time === 0) {
-        var rightAnswer =
-          state.questions[state.numberCurrentQuestion].rightAnswer;
-        state.answersBackgroundColor[rightAnswer - 1] = "bg-success";
+        var rightAnswers =
+          state.questions[state.numberCurrentQuestion].rightAnswers.split(',');
+        rightAnswers.forEach((rightAnswer) => {
+          state.answersBackgroundColor[parseInt(rightAnswer) - 1] =
+            "bg-success";
+        });
       }
       return { ...state };
     }

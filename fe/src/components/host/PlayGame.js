@@ -9,17 +9,22 @@ export class PlayGame extends Component {
   }
 
   componentDidMount() {
-    const { questions, numberCurrentQuestion } = this.props.host;
+   
+    const { questions, numberCurrentQuestion,members } = this.props.host;
+
     const t = questions[numberCurrentQuestion].timeAnswer;
 
-    const { setTimeQuestion } = this.props;
+    const { setTimeQuestion,membersBeforeTimeOut } = this.props;
+    membersBeforeTimeOut([...members])
     setTimeQuestion(t);
-
+  
     this.idTimer = setInterval(() => {
       this.timeCountDown();
     }, 300);
 
     const { socket } = this.props.host;
+ 
+
     socket.on("memberAnswer", (data) => {
       const { questions, numberCurrentQuestion } = this.props.host;
       const { members } = this.props.host;
@@ -44,15 +49,20 @@ export class PlayGame extends Component {
           return 0;
         });
       }
+
       memberAnswer(members);
     });
   }
 
   onClick = () => {
-    const { numberCurrentQuestion, questions } = this.props.host;
-    const { clickNextQuestion } = this.props;
+    const { numberCurrentQuestion, questions, members } = this.props.host;
+    const { clickNextQuestion, membersBeforeTimeOut } = this.props;
     const numberQuestion = questions.length;
-    if (numberCurrentQuestion < numberQuestion - 1) clickNextQuestion();
+    if (numberCurrentQuestion < numberQuestion - 1) {
+      var membersBefore = [...members];
+      membersBeforeTimeOut(membersBefore);
+      clickNextQuestion();
+    }
   };
 
   timeCountDown = () => {
@@ -74,13 +84,27 @@ export class PlayGame extends Component {
       members,
       time,
       answersBackgroundColor,
+      membersBeforeTimeOut,
     } = this.props.host;
     const question = questions[numberCurrentQuestion];
     const score = questions[numberCurrentQuestion].score;
     const numberQuestion = questions.length;
     const numberMembers = members.length;
 
-    var showMembers = members.map((member, i) => {
+    var showMembersAfterTimeOut = members.map((member, i) => {
+      return (
+        <tbody key={i}>
+          <tr>
+            <th scope="row">{(i += 1)} </th>
+            <td>{member.nickName}</td>
+            <td>{member.rightQuestion}</td>
+            <td>{member.score}</td>
+          </tr>
+        </tbody>
+      );
+    });
+
+    var showMembersBeforeTimeOut = membersBeforeTimeOut.map((member, i) => {
       return (
         <tbody key={i}>
           <tr>
@@ -92,12 +116,16 @@ export class PlayGame extends Component {
         </tbody>
       );
     });
-    const arr = [];
-    arr.push(question.answer1);
-    arr.push(question.answer2);
-    arr.push(question.answer3);
-    arr.push(question.answer4);
 
+    var show = () => {
+      if (time === 0) {
+        return showMembersAfterTimeOut;
+      } else {
+        return showMembersBeforeTimeOut;
+      }
+    };
+
+    const arr = question.answers.split('||')
     const answers = arr.map((answer, index) => {
       return (
         <button
@@ -118,7 +146,7 @@ export class PlayGame extends Component {
         min = time / 60;
         sec = time % 60;
         if (sec < 10) sec = "0" + sec;
-        time = min + "" + sec;
+        time = "0" + min + "" + sec;
       } else if (time > 0) {
         min = "00";
         sec = time;
@@ -176,7 +204,7 @@ export class PlayGame extends Component {
                   <th scope="col">Điểm số</th>
                 </tr>
               </thead>
-              {showMembers}
+              {show()}
             </table>
           </div>
         </div>
@@ -192,8 +220,12 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
+ 
     setTimeQuestion: (time) => {
       dispatch(actions.setTimeQuestion(time));
+    },
+    membersBeforeTimeOut: (membersBeforeTimeOut) => {
+      dispatch(actions.membersBeforeTimeOut(membersBeforeTimeOut));
     },
 
     clickNextQuestion: (numberCurrentQuestion) => {

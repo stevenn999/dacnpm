@@ -6,14 +6,22 @@ export class Answer extends Component {
   onClick = (index) => {
     const { socket, questions, numberCurrentQuestion } = this.props.player;
     const { clickAnswer } = this.props;
-    const rightAnswer = questions[numberCurrentQuestion].rightAnswer;
-    var {answersColor}=this.props.player;
-    answersColor[index]='text-danger';
+    const rightAnswers = questions[numberCurrentQuestion].rightAnswers.split(
+      ","
+    );
+    var { answersColor } = this.props.player;
+    answersColor[index] = "text-danger";
 
-    clickAnswer(true,answersColor);
-    if (index===rightAnswer-1) {
-      socket.emit("memberAnswer", true);
-    } else {
+    clickAnswer(true, answersColor);
+    var right = false;
+    rightAnswers.forEach((rightAnswer) => {
+      if (index === parseInt(rightAnswer) - 1) {
+        socket.emit("memberAnswer", true);
+        right = true;
+      }
+    });
+
+    if (!right) {
       socket.emit("memberAnswer", false);
     }
   };
@@ -24,23 +32,19 @@ export class Answer extends Component {
       numberCurrentQuestion,
       disableAnswer,
       answersColor,
-      answersBackgroundColor
+      answersBackgroundColor,
     } = this.props.player;
     const question = questions[numberCurrentQuestion];
-    const arr = [];
-    arr.push(question.answer1);
-    arr.push(question.answer2);
-    arr.push(question.answer3);
-    arr.push(question.answer4);
+    const arr = question.answers.split("||");
 
-    const answers = arr.map(( answer,index) => {
+    const answers = arr.map((answer, index) => {
       return (
         <button
           key={index}
           onClick={() => this.onClick(index)}
           type="button"
           disabled={disableAnswer}
-          className={ `col-10 col-sm-5 btnAnswer ${answersColor[index]}  ${answersBackgroundColor[index]} `}
+          className={`col-10 col-sm-5 btnAnswer ${answersColor[index]}  ${answersBackgroundColor[index]} `}
         >
           {answer}
         </button>
@@ -58,8 +62,8 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
-    clickAnswer: (disableAnswer,answersColor) => {
-      dispatch(actions.clickAnswer(disableAnswer,answersColor));
+    clickAnswer: (disableAnswer, answersColor) => {
+      dispatch(actions.clickAnswer(disableAnswer, answersColor));
     },
   };
 };

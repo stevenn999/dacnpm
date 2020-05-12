@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 require("express-async-errors");
-const auth=require("./middleware/auth")
+const auth = require("./middleware/auth");
 
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
@@ -10,35 +10,80 @@ server.listen(process.env.PORT || 8000, () => {
   console.log("Listing port 8000");
 });
 
-
 app.use(cors());
 app.use(express.json());
 
 var arrRoom = [];
 //socket io
 io.on("connection", function (socket) {
-  console.log("CÓ người kết nối");
   //Host Tạo Room
   socket.on("creat_room", (idRoom) => {
     socket.host = true;
     console.log("Host tạo room", idRoom);
-    arrRoom.push(idRoom);
+    arrRoom.push({ idRoom: idRoom, nickNames: [] });
+
     socket.join(idRoom);
     socket.idRoom = idRoom;
     console.log("Host đang có", arrRoom);
   });
   //Player Tham gia vào Room
   socket.on("join_room", (idRoom) => {
-    socket.player = true;
-    var isRightRoom = arrRoom.find((room) => idRoom === room);
+    var isRightRoom = arrRoom.find((room) => idRoom === room.idRoom);
+
     if (isRightRoom) {
-      socket.join(idRoom);
-      socket.idRoom = idRoom;
       socket.emit("is_join_room", true);
-      console.log("Player join room: ", socket.idRoom);
     } else {
       socket.emit("is_join_room", false);
     }
+  });
+  //Host Lưu nick name
+  socket.on("nickName", function (data) {
+    var memberNew = {
+      id: socket.id,
+      nickName: data,
+      rightQuestion: 0,
+      score: 0,
+    };
+
+    const room = arrRoom.find((room) => (socket.idRoom = room.idRoom));
+    const index = arrRoom.indexOf(room);
+    const idRoom = arrRoom[index].idRoom;
+    //Kiểm tra nickName đã tồn tại trong room
+    let nickName = arrRoom[index].nickNames.find((n) => n === data);
+    if (!nickName) {
+      arrRoom[index].nickNames.push(data);
+      socket.emit("isRightNickName", true);
+      io.sockets.in(socket.idRoom).emit("newMember", memberNew);
+      io.sockets.in(socket.idRoom).emit("Number", 1);
+      socket.nickName = data;
+      socket.join(idRoom);
+      socket.player = true;
+      socket.idRoom = idRoom;
+
+      console.log(socket.nickName + "Player join room: ", socket.idRoom);
+    } else {
+      socket.emit("isRightNickName", false);
+    }
+  });
+  ///
+  socket.on("leave_room", (id) => {
+    io.sockets.in(id).emit("leave_room", true);
+  });
+  socket.on("exitRoom", (data) => {
+    console.log("Rời");
+    let room = arrRoom.find((room) => (socket.idRoom = room.idRoom));
+    if (room) {
+      let index = room.nickNames.indexOf(socket.nickName);
+      if (index > -1) {
+        room.nickNames.splice(index, 1);
+        arrRoom[index] = room;
+      }
+    }
+    
+    console.log(socket.nickName + " player thoát");
+    io.sockets.in(socket.idRoom).emit("memberExit", socket.nickName);
+    socket.emit("hostExit", true);
+    socket.leave(socket.idRoom);
   });
   //Host bắt đầu
   socket.on("start", function (start) {
@@ -62,18 +107,7 @@ io.on("connection", function (socket) {
       .in(socket.idRoom)
       .emit("numberCurrentQuestion", socket.numberCurrentQuestion);
   });
-  //Host Lưu nick name
-  socket.on("nickName", function (data) {
-    var memberNew = {
-      id: socket.id,
-      nickName: data,
-      rightQuestion: 0,
-      score: 0,
-    };
-    socket.nickName = data;
-    io.sockets.in(socket.idRoom).emit("newMember", memberNew);
-    io.sockets.in(socket.idRoom).emit("Number", 1);
-  });
+
   //Player đưa câu trả lời lên host
   socket.on("memberAnswer", function (data) {
     io.sockets.in(socket.idRoom).emit("memberAnswer", {
@@ -85,19 +119,26 @@ io.on("connection", function (socket) {
   socket.on("disconnect", function () {
     //Host thoát
     if (socket.host && !socket.player) {
-      const index = arrRoom.indexOf(socket.idRoom);
-      console.log("host thoát");
-      start = false;
-      io.sockets.in(socket.idRoom).emit("is_join_room", false);
-      io.sockets.in(socket.idRoom).emit("startOk", false);
-      if (index > -1) {
-        arrRoom.splice(index, 1);
-      }
+      arrRoom = arrRoom.filter(function (room) {
+        return room.idRoom !== socket.idRoom;
+      });
+      io.sockets.in(socket.idRoom).emit("hostExit", true);
+
       io.sockets.in(socket.idRoom).emit("numberCurrentQuestion", 0);
+      console.log("host thoát");
       //Player thoát
     } else if (socket.player && !socket.host) {
-      console.log("player thoát");
-      io.sockets.in(socket.idRoom).emit("memberExit", socket.id);
+      let room = arrRoom.find((room) => (socket.idRoom = room.idRoom));
+      if (room) {
+        let index = room.nickNames.indexOf(socket.nickName);
+        if (index > -1) {
+          room.nickNames.splice(index, 1);
+          arrRoom[index] = room;
+        }
+      }
+
+      console.log(socket.nickNames + " player thoát");
+      io.sockets.in(socket.idRoom).emit("memberExit", socket.nickName);
     } else {
       console.log("Vãng lai thoát");
     }
@@ -109,8 +150,8 @@ app.get("/", function (req, res) {
   res.send("Hello!");
 });
 
-app.use('/api/questions',auth,require('./routes/questions.route'))
-app.use('/api/account',require('./routes/accounts.route'))
+app.use("/api/questions", auth, require("./routes/questions.route"));
+app.use("/api/account", require("./routes/accounts.route"));
 //catch error
 app.use((req, res, next) => {
   res.status(404).send("NOT FOUND");
