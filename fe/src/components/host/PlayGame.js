@@ -12,7 +12,7 @@ export class PlayGame extends Component {
    
     const { questions, numberCurrentQuestion,members } = this.props.host;
 
-    const t = questions[numberCurrentQuestion].timeAnswer;
+    const t = questions[numberCurrentQuestion].time;
 
     const { setTimeQuestion,membersBeforeTimeOut } = this.props;
     membersBeforeTimeOut([...members])
@@ -125,7 +125,7 @@ export class PlayGame extends Component {
       }
     };
 
-    const arr = question.answers.split('||')
+    const arr = question.answers
     const answers = arr.map((answer, index) => {
       return (
         <button
@@ -161,7 +161,7 @@ export class PlayGame extends Component {
     return (
       <div className=" row">
         <div className="col-12 col-lg-8 questionHost">
-          <h2 className="question">{question.question}</h2>
+          <h2 className="questionLabel">{question.question}</h2>
           <div className="row">
             <div className="bg-dark timecountdown">
               <span className="pl-3 text-warning">Time:</span>

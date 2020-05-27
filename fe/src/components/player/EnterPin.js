@@ -20,12 +20,12 @@ export class EnterPin extends Component {
             e.preventDefault();
           }}
           method="POST"
-          className="formEnterpin"
+          className="col-10 col-sm-3"
         >
           <div className="form-group">
             <input
               type="text"
-              className="form-control"
+              className="inputPIN col-12"
               id="nickName"
               placeholder="Nick Name"
             />
@@ -33,7 +33,7 @@ export class EnterPin extends Component {
           <div className="form-group">
             <input
               type="text"
-              className="form-control"
+              className="inputPIN col-12"
               id="pin"
               placeholder="PIN"
             />
@@ -41,10 +41,10 @@ export class EnterPin extends Component {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary col-12"
             onClick={() => this.onClick()}
           >
-            Enter
+            <h3>Enter</h3>
           </button>
         </form>
       </div>

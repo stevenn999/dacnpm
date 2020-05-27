@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const connectDb=require('./utils/db')
+
+connectDb()
 require("express-async-errors");
 const auth = require("./middleware/auth");
 
@@ -152,6 +155,8 @@ app.get("/", function (req, res) {
 
 app.use("/api/questions", auth, require("./routes/questions.route"));
 app.use("/api/account", require("./routes/accounts.route"));
+app.use("/api/user", require("./routes/users.route"));
+app.use("/api/quiz", require("./routes/quiz.route"));
 //catch error
 app.use((req, res, next) => {
   res.status(404).send("NOT FOUND");

@@ -65,14 +65,53 @@ export class Player extends Component {
     });
   };
 
+  sendAnswer = () => {
+    const { socket, questions, numberCurrentQuestion } = this.props.player;
+    const { clickAnswer } = this.props;
+    const rightAnswers = questions[numberCurrentQuestion].rightAnswers;
+    let { playerAnswer } = this.props.player;
+    for (let i = 0; i < rightAnswers.length; i++) {
+      if (!rightAnswers[i]) rightAnswers[i] = false;
+      if (!playerAnswer[i]) playerAnswer[i] = false;
+    }
+
+    clickAnswer(true);
+    if (this.isEqual(rightAnswers, playerAnswer)) {
+      socket.emit("memberAnswer", true);
+    } else {
+      socket.emit("memberAnswer", true);
+    }
+  };
+  isEqual = (a, b) => {
+    if (a.length !==b.length) return false;
+    else {
+      for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+      return true;
+    }
+  };
+
   show = () => {
-    const { questions, start, pin, nickName, isJoinRoom } = this.props.player;
+    const {
+      questions,
+      start,
+      pin,
+      nickName,
+      isJoinRoom,
+      disableAnswer,
+    } = this.props.player;
     if (questions !== null && start && pin && isJoinRoom) {
       return (
         <div className="row">
           <div className="col-12 col-sm-8 wrapper mx-auto">
             <Question />
             <Img />
+            <button
+              onClick={this.sendAnswer}
+              disabled={disableAnswer}
+              className="btn btn-info"
+            >
+              Gửi đáp án
+            </button>
             <Answer />
           </div>
         </div>
@@ -96,6 +135,9 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
+    clickAnswer: (disableAnswer) => {
+      dispatch(actions.clickAnswer(disableAnswer));
+    },
     connectSocketIoPlayer: () => {
       dispatch(actions.connectSocketIoPlayer());
     },

@@ -10,7 +10,7 @@ export class Questions extends Component {
   }
   componentDidMount() {
     const { questions, numberCurrentQuestion } = this.props.player;
-    const t = questions[numberCurrentQuestion].timeAnswer;
+    const t = questions[numberCurrentQuestion].time;
 
     const { setTimeQuestion } = this.props;
     setTimeQuestion(t);
@@ -53,8 +53,8 @@ export class Questions extends Component {
       return time;
     };
     return (
-      <div>
-        <h2 className="question">{question}</h2>
+      <div className="question">
+        <h2 className="questionLabel">{question}</h2>
         <div className="bg-dark timecountdown">
           <span className="pl-3 text-warning">Time:</span>
           <span className="pl-3 pr-3 text-white">{timeCountDown(time)}</span>

@@ -6,7 +6,9 @@
     align-items: center
 }
 
-.formEnterpin {
-    width: 30%;
+.inputPIN {
+    height: 50px;
+    font-weight: bold;
+    font-size: 30px;
     text-align: center;
 }

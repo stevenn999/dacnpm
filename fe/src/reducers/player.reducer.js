@@ -12,11 +12,11 @@ var initState = {
   nickName: "",
   pin: "",
   arrRoom: [],
+  playerAnswer:[false],
   isJoinRoom: false,
   disableAnswer: false,
   time: 0,
-  answersColor: ["", "", "", ""],
-  answersBackgroundColor: ["", "", "", ""],
+  answersBackgroundColor: [],
 };
 
 var myReducer = (state = initState, action) => {
@@ -59,16 +59,19 @@ var myReducer = (state = initState, action) => {
     }
     case types.LOAD_QUESTION: {
       state.disableAnswer = false;
-      state.answersColor = ["", "", "", ""];
-      state.answersBackgroundColor = ["", "", "", ""];
+      state.playerAnswer=[]
+      state.answersBackgroundColor = [];
       state.numberCurrentQuestion = action.numberCurrentQuestion;
       if (state.questions)
-        state.time = state.questions[state.numberCurrentQuestion].timeAnswer;
+        state.time = state.questions[state.numberCurrentQuestion].time;
       return { ...state };
     }
     case types.CLICK_ANSWER: {
       state.disableAnswer = action.disableAnswer;
-      state.answersColor = action.answersColor;
+      return { ...state };
+    }
+    case types.PLAYER_CLICK_BUTTON_ANSWER: {
+      state.playerAnswer = action.playerAnswer;
       return { ...state };
     }
     case types.SET_TIME_QUESTION_PLAYER: {
@@ -77,11 +80,12 @@ var myReducer = (state = initState, action) => {
       if (state.time === 0) {
         var rightAnswers = state.questions[
           state.numberCurrentQuestion
-        ].rightAnswers.split(",");
-        rightAnswers.forEach((rightAnswer) => {
-          state.answersBackgroundColor[parseInt(rightAnswer) - 1] =
-            "bg-success";
-        });
+        ].rightAnswers
+        for(let i=0;i<rightAnswers.length;i++){
+          rightAnswers[i]? state.answersBackgroundColor[i] =
+          "bg-success": state.answersBackgroundColor[i] =
+          "";
+        }
         state.disableAnswer = true;
       }
       return { ...state };

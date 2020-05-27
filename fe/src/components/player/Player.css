@@ -17,11 +17,14 @@ body {
 }
 
 .question {
+    width: 90%;
+}
+
+.questionLabel {
     margin-top: 3%;
-    background-color: rgb(240, 57, 11);
     text-align: center;
     padding: 10px;
-    width: 90%;
+    background-color: red;
     border-radius: 20px;
     color: white;
     margin: 10px auto;
@@ -38,14 +41,15 @@ body {
 
 .btnAnswer {
     margin: 10px;
-    background-color: #0b4e1b;
+    background-color: #11361a;
     border-radius: 20px;
     border: 2px solid #e2e48e;
     color: white;
     font-size: 20px;
 }
+
 .btnAnswer:hover {
-    background-color: #e29911; 
+    background-color: #0f6322;
 }
 
 

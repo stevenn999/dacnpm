@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/actionHost";
 import axios from "axios";
-import { endPointDataQuestion } from "../../constants/endPoint";
-import music from "./backgroundaudio.mp3";
+import { urlGetQuizById } from "../../constants/endPoint";
+import { withRouter } from "react-router-dom";
 
 export class PreparePlayGame extends Component {
   componentDidMount() {
@@ -21,7 +21,6 @@ export class PreparePlayGame extends Component {
       const { saveNewMember } = this.props;
       saveNewMember(newMember);
     });
-    
 
     socket.on("memberExit", (data) => {
       var { members } = this.props.host;
@@ -37,18 +36,19 @@ export class PreparePlayGame extends Component {
   loadQuestions = async () => {
     const { getQuestions } = this.props;
     const token = localStorage.getItem("token");
-    const questions = await axios.get(endPointDataQuestion, {
+    const { idQuiz } = this.props.match.params;
+
+    const questions = await axios.get(urlGetQuizById + `/${idQuiz}`, {
       headers: { "x-access-token": `${token}` },
     });
-    console.log( JSON.parse(questions.data[0].test+'').answer1 )
-    getQuestions(questions.data);
+    getQuestions(questions.data.quiz);
   };
 
   onClick = async () => {
     const { socket, questions } = this.props.host;
     const { clickStartGame } = this.props;
-    socket.emit("start", true);
     socket.emit("questions", questions);
+    socket.emit("start", true);
     clickStartGame(true);
   };
 
@@ -74,9 +74,6 @@ export class PreparePlayGame extends Component {
     });
     return (
       <div className="prepareplaygame">
-        <audio className="hideAudio" controls loop autoPlay>
-          <source src={music} />
-        </audio>
         <p className="pin">PIN:{pin}</p>
         <div className="startgame">
           <button
@@ -120,4 +117,6 @@ const mapDispathToProps = (dispatch, props) => {
     },
   };
 };
-export default connect(mapStatetoProps, mapDispathToProps)(PreparePlayGame);
+export default withRouter(
+  connect(mapStatetoProps, mapDispathToProps)(PreparePlayGame)
+);

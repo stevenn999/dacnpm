@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import jwtDecode from "jwt-decode";
 import Quiz from "./Quiz";
 import Answer from "./Answer";
 import Menu from "./Menu";
-import "./CreateQuiz.css";
 import axios from "axios";
-import { urlAddQuiz } from "../../constants/endPoint";
+import { withRouter } from "react-router-dom";
+import { urlGetQuizById, urlUpdateQuizById } from "../../constants/endPoint";
 
-export default class CreateQuiz extends Component {
+class EditQuiz extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,10 +28,12 @@ export default class CreateQuiz extends Component {
     };
   }
   UNSAFE_componentWillMount() {
-    const token = localStorage.getItem("token");
-    const tokenDecode = jwtDecode(token);
-    this.setState({
-      idUser: tokenDecode.idUser,
+    // const token = localStorage.getItem("token");
+  
+
+    const { idQuiz } = this.props.match.params;
+    axios.get(urlGetQuizById + `/${idQuiz}`).then((data) => {
+      this.setState({ ...data.data, arrQuiz: data.data.quiz });
     });
   }
 
@@ -127,7 +128,6 @@ export default class CreateQuiz extends Component {
       arrQuiz,
     });
   };
-
   addAnswer = () => {
     let { arrQuiz, indexQuiz } = this.state;
     arrQuiz[indexQuiz].answers.push("");
@@ -135,6 +135,7 @@ export default class CreateQuiz extends Component {
   };
 
   onSave = () => {
+    const { idQuiz } = this.props.match.params;
     const { idUser, nameQuiz, arrQuiz, imgQuiz } = this.state;
     const entity = {
       idUser,
@@ -142,9 +143,10 @@ export default class CreateQuiz extends Component {
       quiz: [...arrQuiz],
       imgQuiz,
     };
-    console.log(entity);
-    axios.post(urlAddQuiz, entity).then((data) => {
-      alert("Thêm thành công");
+
+    console.log(arrQuiz);
+    axios.post(urlUpdateQuizById + `/${idQuiz}`, entity).then((data) => {
+      alert("Sửa thành công");
     });
   };
 
@@ -192,6 +194,7 @@ export default class CreateQuiz extends Component {
         <Menu
           onSave={this.onSave}
           onChangeNameQuiz={this.onChangeNameQuiz}
+          nameQuiz={this.state.nameQuiz}
         ></Menu>
         <div className="row">
           <div className="col-2 sidebar">
@@ -238,10 +241,6 @@ export default class CreateQuiz extends Component {
                   <option>40</option>
                   <option>50</option>
                   <option>60</option>
-                  <option>70</option>
-                  <option>80</option>
-                  <option>90</option>
-                  <option>100</option>
                 </select>
               </div>
               <div className="img-quiz col-4">
@@ -276,3 +275,5 @@ export default class CreateQuiz extends Component {
     );
   }
 }
+
+export default withRouter(EditQuiz);

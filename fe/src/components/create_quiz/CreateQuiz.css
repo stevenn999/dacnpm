@@ -1,3 +1,5 @@
+
+
 .sidebar {
     height: 100vh;
     background-color: aliceblue;
@@ -7,6 +9,9 @@
     flex-direction: column;
     align-items: center;
 }
+
+
+
 
 .scrollBarAddQuiz {
     max-height: 85vh;
@@ -24,7 +29,6 @@
 }
 
 .create-quiz {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -121,7 +125,7 @@
 .text-Answer {
     font-weight: bold;
     padding: 10px;
-    height: 100px;
+    height: 50px;
     font-size: 20px;
     background-color: antiquewhite;
     text-decoration: none;

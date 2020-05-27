@@ -4,7 +4,8 @@ import openSocket from "socket.io-client";
 
 var initState = {
   socket: null,
-  pin: Math.floor(Math.random() * 1000000) + 1,
+  idQuiz:'',
+  pin: Math.floor(Math.random() * 10000000) + 1,
   startPlay: false,
   questions: [],
   numberMembersAnswer: 0,
@@ -12,7 +13,7 @@ var initState = {
   membersBeforeTimeOut: [],
   numberCurrentQuestion: 0,
   time: 0,
-  answersBackgroundColor: ["", "", "", ""],
+  answersBackgroundColor: [],
 };
 var myReducer = (state = initState, action) => {
   switch (action.type) {
@@ -48,8 +49,8 @@ var myReducer = (state = initState, action) => {
     case types.CLICK_NEXT_QUESTION: {
       state.socket.emit("next", 1);
       state.numberCurrentQuestion += 1;
-      state.answersBackgroundColor = ["", "", "", ""];
-      state.time = state.questions[state.numberCurrentQuestion].timeAnswer;
+      state.answersBackgroundColor = [];
+      state.time = state.questions[state.numberCurrentQuestion].time;
       state.numberMembersAnswer = 0;
       return { ...state };
     }
@@ -68,11 +69,13 @@ var myReducer = (state = initState, action) => {
       state.time = action.time;
       if (state.time === 0) {
         var rightAnswers =
-          state.questions[state.numberCurrentQuestion].rightAnswers.split(',');
-        rightAnswers.forEach((rightAnswer) => {
-          state.answersBackgroundColor[parseInt(rightAnswer) - 1] =
-            "bg-success";
-        });
+          state.questions[state.numberCurrentQuestion].rightAnswers;
+          for(let i=0;i<rightAnswers.length;i++){
+            rightAnswers[i]? state.answersBackgroundColor[i] =
+            "bg-success": state.answersBackgroundColor[i] =
+            "";
+          }
+        
       }
       return { ...state };
     }

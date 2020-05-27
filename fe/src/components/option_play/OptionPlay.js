@@ -1,12 +1,20 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import "./OptionPlay.css";
 
-export default class OptionPlay extends Component {
+class OptionPlay extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
+    const { idQuiz } = this.props.match.params;
+    console.log(idQuiz);
     return (
       <div className="box-option-game">
-        <Link to="/play_game">
+        <Link to={`/play_game/${idQuiz}`}>
           <button className="btn btn-danger mb-5">Chơi game</button>
         </Link>
 
@@ -39,7 +47,6 @@ export default class OptionPlay extends Component {
           </div>
         </div>
         <div className="card option-score">
-        
           <h2 className="card-header text-center bg-warning">
             Cách tính điểm mỗi câu hỏi
           </h2>
@@ -86,3 +93,5 @@ export default class OptionPlay extends Component {
     );
   }
 }
+
+export default withRouter(OptionPlay);

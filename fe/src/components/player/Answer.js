@@ -1,29 +1,16 @@
 import React, { Component } from "react";
 import * as actions from "../../actions/actionPlayer";
 import { connect } from "react-redux";
+import "./Answer.css";
 
 export class Answer extends Component {
   onClick = (index) => {
-    const { socket, questions, numberCurrentQuestion } = this.props.player;
-    const { clickAnswer } = this.props;
-    const rightAnswers = questions[numberCurrentQuestion].rightAnswers.split(
-      ","
-    );
-    var { answersColor } = this.props.player;
-    answersColor[index] = "text-danger";
+   
+    let { playerAnswer } = this.props.player;
+    playerAnswer[index] = !playerAnswer[index];
+    const { playerClickButtonAnswer } = this.props;
+    playerClickButtonAnswer(playerAnswer);
 
-    clickAnswer(true, answersColor);
-    var right = false;
-    rightAnswers.forEach((rightAnswer) => {
-      if (index === parseInt(rightAnswer) - 1) {
-        socket.emit("memberAnswer", true);
-        right = true;
-      }
-    });
-
-    if (!right) {
-      socket.emit("memberAnswer", false);
-    }
   };
 
   render() {
@@ -31,20 +18,21 @@ export class Answer extends Component {
       questions,
       numberCurrentQuestion,
       disableAnswer,
-      answersColor,
       answersBackgroundColor,
     } = this.props.player;
     const question = questions[numberCurrentQuestion];
-    const arr = question.answers.split("||");
-
+    const arr = question.answers;
     const answers = arr.map((answer, index) => {
+      var { playerAnswer } = this.props.player;
       return (
         <button
           key={index}
           onClick={() => this.onClick(index)}
           type="button"
           disabled={disableAnswer}
-          className={`col-10 col-sm-5 btnAnswer ${answersColor[index]}  ${answersBackgroundColor[index]} `}
+          className={`col-10 col-sm-5 btnAnswer  ${
+            playerAnswer[index] ? "text-danger" : ""
+          } ${answersBackgroundColor[index]} `}
         >
           {answer}
         </button>
@@ -62,8 +50,9 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
-    clickAnswer: (disableAnswer, answersColor) => {
-      dispatch(actions.clickAnswer(disableAnswer, answersColor));
+   
+    playerClickButtonAnswer: (playerAnswer) => {
+      dispatch(actions.playerClickButtonAnswer(playerAnswer));
     },
   };
 };
