@@ -29,7 +29,6 @@ class EditQuiz extends Component {
   }
   UNSAFE_componentWillMount() {
     // const token = localStorage.getItem("token");
-  
 
     const { idQuiz } = this.props.match.params;
     axios.get(urlGetQuizById + `/${idQuiz}`).then((data) => {
@@ -123,7 +122,8 @@ class EditQuiz extends Component {
   };
   removeAnswer = (i) => {
     var { arrQuiz, indexQuiz } = this.state;
-    if (i > 0) arrQuiz[indexQuiz].answers.splice(i, 1);
+    if (i > 0 || (i === 0 && arrQuiz[indexQuiz].answers.length > 1))
+      arrQuiz[indexQuiz].answers.splice(i, 1);
     this.setState({
       arrQuiz,
     });
@@ -266,7 +266,7 @@ class EditQuiz extends Component {
             <div className="text-Answers mt-5 row ">{showAnswers()}</div>
             <button className="btn btn-success mt-3" onClick={this.addAnswer}>
               <i className="fa fa-plus fa-2x " aria-hidden="true">
-                Thêm câu hỏi
+                Thêm câu trả lời
               </i>
             </button>
           </div>

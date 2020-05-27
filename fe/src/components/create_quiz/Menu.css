@@ -1,5 +1,5 @@
 .menuCreteQuiz {
-    background-color: #0e0d0b;
+    background-color: #46178f;
     height: 50px;
     display: flex;
     flex-direction: row;
@@ -17,4 +17,8 @@
 
 .labelNameQuiz {
     color: #fff;
+}
+
+.txtNameQuiz {
+    padding: 20;
 }

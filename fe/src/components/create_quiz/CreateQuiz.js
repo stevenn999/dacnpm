@@ -122,7 +122,8 @@ export default class CreateQuiz extends Component {
   };
   removeAnswer = (i) => {
     var { arrQuiz, indexQuiz } = this.state;
-    if (i > 0) arrQuiz[indexQuiz].answers.splice(i, 1);
+    if (i > 0 || (i === 0 && arrQuiz[indexQuiz].answers.length > 1))
+      arrQuiz[indexQuiz].answers.splice(i, 1);
     this.setState({
       arrQuiz,
     });
@@ -265,9 +266,9 @@ export default class CreateQuiz extends Component {
             </div>
 
             <div className="text-Answers mt-5 row ">{showAnswers()}</div>
-            <button className="btn btn-success mt-3" onClick={this.addAnswer}>
-              <i className="fa fa-plus fa-2x " aria-hidden="true">
-                Thêm câu hỏi
+            <button className="btn bg-success  mt-3" onClick={this.addAnswer}>
+              <i className="fa fa-plus fa-1x text-light " aria-hidden="true">
+                Thêm câu trả lời
               </i>
             </button>
           </div>

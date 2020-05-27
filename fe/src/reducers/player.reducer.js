@@ -7,6 +7,7 @@ var initState = {
   questions: null,
   numberCurrentQuestion: 0,
   score: 0,
+  scoreTimeOut:0,
   start: false,
   members: [],
   nickName: "",
@@ -74,10 +75,16 @@ var myReducer = (state = initState, action) => {
       state.playerAnswer = action.playerAnswer;
       return { ...state };
     }
+    case types.SET_SCORE_PLAYER: {
+      state.score = action.score;
+      return { ...state };
+    }
     case types.SET_TIME_QUESTION_PLAYER: {
       state.time = action.time;
 
       if (state.time === 0) {
+        state.scoreTimeOut=state.score;
+        
         var rightAnswers = state.questions[
           state.numberCurrentQuestion
         ].rightAnswers

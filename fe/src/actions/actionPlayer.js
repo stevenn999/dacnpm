@@ -59,6 +59,12 @@ export const setTimeQuestion = (time) => {
     time,
   };
 };
+export const setScorePlayer = (score) => {
+  return {
+    type: types.SET_SCORE_PLAYER,
+    score,
+  };
+};
 
 export const playerClickButtonAnswer = (playerAnswer) => {
     return {

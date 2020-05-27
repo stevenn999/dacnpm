@@ -21,19 +21,19 @@ class Quiz extends Component {
             <h2 className="mt-2 ml-5">{this.props.nameQuiz}</h2>
             <div className="menu-button">
               <Link to={`/edit/${idQuiz}`}>
-                <button className="btn btn-warning ">
+                <button className="btn btn-warning buttonQuiz ">
                   <i className="fa fa-pencil " aria-hidden="true">
                     Chỉnh sửa
                   </i>
                 </button>
               </Link>
-              <button className="btn btn-danger " onClick={this.removeQuiz}>
+              <button className="btn btn-danger buttonQuiz " onClick={this.removeQuiz}>
                 <i className="fa fa-trash" aria-hidden="true">
                   Xóa
                 </i>
               </button>
               <Link to={`/option_play/${idQuiz}`} target="_blank">
-                <button className="btn btn-success ">
+                <button className="btn btn-success buttonQuiz ">
                   <i className="fa fa-play" aria-hidden="true">
                     Chơi game
                   </i>

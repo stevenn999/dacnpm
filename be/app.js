@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const connectDb=require('./utils/db')
+const connectDb = require("./utils/db");
 
-connectDb()
+connectDb();
 require("express-async-errors");
 const auth = require("./middleware/auth");
 
@@ -43,27 +43,28 @@ io.on("connection", function (socket) {
   socket.on("nickName", function (data) {
     var memberNew = {
       id: socket.id,
-      nickName: data,
+      nickName: data.nickName,
       rightQuestion: 0,
       score: 0,
     };
-
-    const room = arrRoom.find((room) => (socket.idRoom = room.idRoom));
+    console.log(data)
+    const room = arrRoom.find((room) => (data.idRoom=== room.idRoom));
+    console.log(room)
     const index = arrRoom.indexOf(room);
-    const idRoom = arrRoom[index].idRoom;
     //Kiểm tra nickName đã tồn tại trong room
-    let nickName = arrRoom[index].nickNames.find((n) => n === data);
+    let nickName = arrRoom[index].nickNames.find((n) => n === data.nickName);
     if (!nickName) {
-      arrRoom[index].nickNames.push(data);
+      arrRoom[index].nickNames.push(data.nickName);
       socket.emit("isRightNickName", true);
-      io.sockets.in(socket.idRoom).emit("newMember", memberNew);
-      io.sockets.in(socket.idRoom).emit("Number", 1);
-      socket.nickName = data;
-      socket.join(idRoom);
+      io.sockets.in(data.idRoom).emit("newMember", memberNew);
+      io.sockets.in(data.idRoom).emit("Number", 1);
+      socket.nickName = data.nickName;
+      socket.join(data.idRoom);
       socket.player = true;
-      socket.idRoom = idRoom;
+      socket.idRoom = data.idRoom;
 
-      console.log(socket.nickName + "Player join room: ", socket.idRoom);
+      console.log(socket.nickName + " Player join room: ", socket.idRoom);
+      console.log("Host đang có", arrRoom);
     } else {
       socket.emit("isRightNickName", false);
     }
@@ -82,7 +83,7 @@ io.on("connection", function (socket) {
         arrRoom[index] = room;
       }
     }
-    
+
     console.log(socket.nickName + " player thoát");
     io.sockets.in(socket.idRoom).emit("memberExit", socket.nickName);
     socket.emit("hostExit", true);
@@ -92,6 +93,7 @@ io.on("connection", function (socket) {
   socket.on("start", function (start) {
     socket.start = true;
     socket.numberCurrentQuestion = 0;
+
     io.sockets.in(socket.idRoom).emit("startOk", true);
   });
 

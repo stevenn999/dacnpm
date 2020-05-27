@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import * as actions from "../../actions/actionPlayer";
 
 export class Questions extends Component {
-
   constructor(props) {
     super(props);
     this.idTimer = null;
@@ -15,19 +14,18 @@ export class Questions extends Component {
     const { setTimeQuestion } = this.props;
     setTimeQuestion(t);
 
-    this.idTimer= setInterval(() => {
+    this.idTimer = setInterval(() => {
       this.timeCountDown();
     }, 300);
   }
-  componentWillUnmount(){
-    clearInterval(this.idTimer)
+  componentWillUnmount() {
+    clearInterval(this.idTimer);
   }
 
   timeCountDown = () => {
     var { time } = this.props.player;
     const { setTimeQuestion } = this.props;
     if (time > 0) setTimeQuestion(time - 1);
-    
   };
 
   render() {
@@ -55,9 +53,15 @@ export class Questions extends Component {
     return (
       <div className="question">
         <h2 className="questionLabel">{question}</h2>
-        <div className="bg-dark timecountdown">
-          <span className="pl-3 text-warning">Time:</span>
-          <span className="pl-3 pr-3 text-white">{timeCountDown(time)}</span>
+        <div className="row">
+          <div className="bg-dark timecountdown">
+            <span className="pl-3 text-warning">Time:</span>
+            <span className="pl-3 pr-3 text-white">{timeCountDown(time)}</span>
+          </div>
+          <div className="bg-dark timecountdown">
+            <span className="pl-3 text-warning">Tổng điểm:</span>
+            <span className="pl-3 pr-3 text-white">{this.props.player.scoreTimeOut}</span>
+          </div>
         </div>
       </div>
     );
@@ -74,8 +78,7 @@ const mapDispathToProps = (dispatch, props) => {
   return {
     setTimeQuestion: (time) => {
       dispatch(actions.setTimeQuestion(time));
-    }
-    
+    },
   };
 };
 export default connect(mapStatetoProps, mapDispathToProps)(Questions);

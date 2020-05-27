@@ -9,27 +9,25 @@ export class PlayGame extends Component {
   }
 
   componentDidMount() {
-   
-    const { questions, numberCurrentQuestion,members } = this.props.host;
+    const { questions, numberCurrentQuestion, members } = this.props.host;
 
     const t = questions[numberCurrentQuestion].time;
 
-    const { setTimeQuestion,membersBeforeTimeOut } = this.props;
-    membersBeforeTimeOut([...members])
+    const { setTimeQuestion, membersBeforeTimeOut } = this.props;
+    membersBeforeTimeOut([...members]);
     setTimeQuestion(t);
-  
+
     this.idTimer = setInterval(() => {
       this.timeCountDown();
     }, 300);
 
     const { socket } = this.props.host;
- 
 
     socket.on("memberAnswer", (data) => {
       const { questions, numberCurrentQuestion } = this.props.host;
       const { members } = this.props.host;
       const { memberAnswer } = this.props;
-      const score = questions[numberCurrentQuestion].score;
+      const score = parseInt(questions[numberCurrentQuestion].score);
       if (data.isRight) {
         const index = members.findIndex((m) => m.id === data.id);
 
@@ -37,7 +35,7 @@ export class PlayGame extends Component {
           id: members[index].id,
           nickName: members[index].nickName,
           rightQuestion: members[index].rightQuestion + 1,
-          score: members[index].score + score,
+          score: parseInt(members[index].score) + score,
         };
         members.sort(function (a, b) {
           if (a.score > b.score) {
@@ -125,7 +123,7 @@ export class PlayGame extends Component {
       }
     };
 
-    const arr = question.answers
+    const arr = question.answers;
     const answers = arr.map((answer, index) => {
       return (
         <button
@@ -220,7 +218,6 @@ const mapStatetoProps = (state) => {
 
 const mapDispathToProps = (dispatch, props) => {
   return {
- 
     setTimeQuestion: (time) => {
       dispatch(actions.setTimeQuestion(time));
     },

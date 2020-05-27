@@ -6,7 +6,7 @@ import { urlRegister } from "../../constants/endPoint";
 import Google from "./Google";
 import axios from "axios";
 import "./Login.css";
-import Facebook from "./Facebook";
+// import Facebook from "./Facebook";
 class Register extends Component {
   accountInvalid = (account) => {
     if (
@@ -134,7 +134,7 @@ class Register extends Component {
                   </Link>
                   <hr className="mt-5" />
                   <Google />
-                  <Facebook />
+                  {/* <Facebook /> */}
                 </form>
               </div>
             </div>
