@@ -1,4 +1,4 @@
-const url = `http://localhost:8000`;
+const url = `https://dacnpm-nhom1.herokuapp.com`;
 export const endPoint = url;
 export const urlGetQuizById = `${url}/api/quiz/show`;
 export const urlUpdateQuizById = `${url}/api/quiz/update`;
