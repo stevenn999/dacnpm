@@ -32,12 +32,13 @@
 }
 
 .questionHost {
-    background-color: #cabf28;
+    background-color: #bdb327;
+    
+    
 }
-
-.questiongame {
-    background-color: #cabf28;
-    height: 100vh;
+.controlQuestions{
+    background-color: #e6e5e0;
+    
 }
 
 

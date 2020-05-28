@@ -36,21 +36,21 @@ body {
     background: #dfded4;
     margin-top: 5%;
     margin: 3% auto;
-    height: 40vh;
-    width: 80%;
+    height: 200px;
+    width: 400px;
 }
 
 .btnAnswer {
     margin: 10px;
-    background-color: #11361a;
+    background-color: #fff;
     border-radius: 20px;
-    border: 2px solid #e2e48e;
-    color: white;
+    border: 1px solid #0d0e0b;
+    color: #000;
     font-size: 20px;
 }
 
 .btnAnswer:hover {
-    background-color: #0f6322;
+    background-color: #f0eeee;
 }
 
 

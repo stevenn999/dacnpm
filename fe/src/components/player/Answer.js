@@ -30,7 +30,7 @@ export class Answer extends Component {
           onClick={() => this.onClick(index)}
           type="button"
           disabled={disableAnswer}
-          className={`col-10 col-sm-5 btnAnswer  ${
+          className={`col-10 col-sm-10 btnAnswer  ${
             playerAnswer[index] ? "text-danger" : ""
           } ${answersBackgroundColor[index]} `}
         >

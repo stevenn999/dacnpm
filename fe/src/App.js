@@ -10,7 +10,7 @@ import Home from "./components/home/Home";
 import CreateQuiz from "./components/create_quiz/CreateQuiz";
 import OptionPlay from "./components/option_play/OptionPlay";
 import EditQuiz from "./components/edit_quiz/EditQuiz";
-
+import PlayerRanking from "./components/player_ranking/PlayerRanking"
 export class App extends Component {
   render() {
     return (
@@ -25,12 +25,14 @@ export class App extends Component {
           <Route path="/create" exact>
             <CreateQuiz />
           </Route>
-
           <Route path="/option_play/:idQuiz">
             <OptionPlay />
           </Route>
           <Route path="/play_game/:idQuiz">
             <Game />
+          </Route>
+          <Route path="/player_ranking">
+            <PlayerRanking />
           </Route>
           <Route path="/edit/:idQuiz">
             <EditQuiz />

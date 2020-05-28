@@ -7,13 +7,13 @@ var initState = {
   questions: null,
   numberCurrentQuestion: 0,
   score: 0,
-  scoreTimeOut:0,
+  scoreTimeOut: 0,
   start: false,
   members: [],
   nickName: "",
   pin: "",
   arrRoom: [],
-  playerAnswer:[false],
+  playerAnswer: [false],
   isJoinRoom: false,
   disableAnswer: false,
   time: 0,
@@ -42,6 +42,11 @@ var myReducer = (state = initState, action) => {
       return { ...state };
     }
     case types.IS_JOIN_ROOM: {
+      if (!action.isJoinRoom) {
+        state.score = 0;
+        state.scoreTimeOut = 0;
+      }
+
       state.isJoinRoom = action.isJoinRoom;
       return { ...state };
     }
@@ -60,7 +65,7 @@ var myReducer = (state = initState, action) => {
     }
     case types.LOAD_QUESTION: {
       state.disableAnswer = false;
-      state.playerAnswer=[]
+      state.playerAnswer = [];
       state.answersBackgroundColor = [];
       state.numberCurrentQuestion = action.numberCurrentQuestion;
       if (state.questions)
@@ -83,15 +88,14 @@ var myReducer = (state = initState, action) => {
       state.time = action.time;
 
       if (state.time === 0) {
-        state.scoreTimeOut=state.score;
-        
-        var rightAnswers = state.questions[
-          state.numberCurrentQuestion
-        ].rightAnswers
-        for(let i=0;i<rightAnswers.length;i++){
-          rightAnswers[i]? state.answersBackgroundColor[i] =
-          "bg-success": state.answersBackgroundColor[i] =
-          "";
+        state.scoreTimeOut = state.score;
+
+        var rightAnswers =
+          state.questions[state.numberCurrentQuestion].rightAnswers;
+        for (let i = 0; i < rightAnswers.length; i++) {
+          rightAnswers[i]
+            ? (state.answersBackgroundColor[i] = "bg-success text-light")
+            : (state.answersBackgroundColor[i] = "");
         }
         state.disableAnswer = true;
       }

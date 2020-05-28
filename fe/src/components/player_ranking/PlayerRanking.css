@@ -1,0 +1,45 @@
+.ranking {
+    background-color: rgb(39, 39, 28);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.btnDownload {
+    position: absolute;
+    top:20px;
+    right: 20px;
+}
+
+.labelRanking {
+    color: #fff;
+    font-size: 80px;
+}
+
+.imgNumber1 {
+    width: 20%;
+
+}
+
+.playerRanking1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.playName1 {
+    color: rgb(178, 211, 31);
+}
+
+.playerRanking {
+    width: 60%;
+
+}
+
+.playName {
+    color: rgb(201, 195, 195);
+}

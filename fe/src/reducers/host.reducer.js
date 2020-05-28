@@ -72,7 +72,7 @@ var myReducer = (state = initState, action) => {
           state.questions[state.numberCurrentQuestion].rightAnswers;
           for(let i=0;i<rightAnswers.length;i++){
             rightAnswers[i]? state.answersBackgroundColor[i] =
-            "bg-success": state.answersBackgroundColor[i] =
+            "bg-success text-light": state.answersBackgroundColor[i] =
             "";
           }
         

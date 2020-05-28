@@ -66,6 +66,7 @@ export class Player extends Component {
       const { isJoinRoom, isPlay } = this.props;
       isJoinRoom(false);
       isPlay(false);
+    
     });
   };
 
@@ -87,7 +88,7 @@ export class Player extends Component {
       setScorePlayer(score);
       socket.emit("memberAnswer", true);
     } else {
-      socket.emit("memberAnswer", true);
+      socket.emit("memberAnswer", false);
     }
   };
   isEqual = (a, b) => {
@@ -116,7 +117,7 @@ export class Player extends Component {
             <button
               onClick={this.sendAnswer}
               disabled={disableAnswer}
-              className="btn btn-info"
+              className="btn bg-success text-light"
             >
               Gửi đáp án
             </button>

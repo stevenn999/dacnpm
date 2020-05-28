@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../actions/actionHost";
+import { withRouter } from "react-router-dom";
 
 export class PlayGame extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ export class PlayGame extends Component {
         members[index] = {
           id: members[index].id,
           nickName: members[index].nickName,
-          rightQuestion: members[index].rightQuestion + 1,
+          numberRightQuestion: members[index].numberRightQuestion + 1,
           score: parseInt(members[index].score) + score,
         };
         members.sort(function (a, b) {
@@ -60,6 +61,13 @@ export class PlayGame extends Component {
       var membersBefore = [...members];
       membersBeforeTimeOut(membersBefore);
       clickNextQuestion();
+    } else {
+      this.props.history.push({
+        pathname: "/player_ranking",
+        state: {
+          members,
+        },
+      });
     }
   };
 
@@ -92,10 +100,10 @@ export class PlayGame extends Component {
     var showMembersAfterTimeOut = members.map((member, i) => {
       return (
         <tbody key={i}>
-          <tr>
+          <tr className="bg-light">
             <th scope="row">{(i += 1)} </th>
             <td>{member.nickName}</td>
-            <td>{member.rightQuestion}</td>
+            <td>{member.numberRightQuestion}</td>
             <td>{member.score}</td>
           </tr>
         </tbody>
@@ -105,10 +113,10 @@ export class PlayGame extends Component {
     var showMembersBeforeTimeOut = membersBeforeTimeOut.map((member, i) => {
       return (
         <tbody key={i}>
-          <tr>
+          <tr className="bg-light">
             <th scope="row">{(i += 1)}</th>
             <td>{member.nickName}</td>
-            <td>{member.rightQuestion}</td>
+            <td>{member.numberRightQuestion}</td>
             <td>{member.score}</td>
           </tr>
         </tbody>
@@ -129,7 +137,7 @@ export class PlayGame extends Component {
         <button
           key={index}
           type="button"
-          className={`col-10 col-sm-5 btnAnswer ${answersBackgroundColor[index]} `}
+          className={`col-10 col-sm-10 btnAnswer ${answersBackgroundColor[index]} `}
         >
           {answer}
         </button>
@@ -177,7 +185,7 @@ export class PlayGame extends Component {
 
           <div className="answers">{answers}</div>
         </div>
-        <div className="col-12 col-lg-4 ">
+        <div className="col-12 col-lg-4 controlQuestions">
           <h1>
             Câu hỏi số: {(numberCurrentQuestion += 1)} / {numberQuestion}
           </h1>
@@ -189,10 +197,10 @@ export class PlayGame extends Component {
             className="btn btn-primary nextquestion"
             onClick={this.onClick}
           >
-            Next question{" "}
+            Next question
             <i className="fa fa-step-forward" aria-hidden="true"></i>
           </button>
-          <div className="table-wrapper-scroll-y my-custom-scrollbar">
+          <div className="table-wrapper-scroll-y my-custom-scrollbar ">
             <table className="table table-bordered table-striped mb-0">
               <thead>
                 <tr>
@@ -233,4 +241,6 @@ const mapDispathToProps = (dispatch, props) => {
     },
   };
 };
-export default connect(mapStatetoProps, mapDispathToProps)(PlayGame);
+export default withRouter(
+  connect(mapStatetoProps, mapDispathToProps)(PlayGame)
+);
