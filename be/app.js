@@ -44,12 +44,12 @@ io.on("connection", function (socket) {
     var memberNew = {
       id: socket.id,
       nickName: data.nickName,
-      rightQuestion: 0,
+      numberRightQuestion: 0,
       score: 0,
     };
-    console.log(data)
-    const room = arrRoom.find((room) => (data.idRoom=== room.idRoom));
-    console.log(room)
+    console.log(data);
+    const room = arrRoom.find((room) => data.idRoom === room.idRoom);
+    console.log(room);
     const index = arrRoom.indexOf(room);
     //Kiểm tra nickName đã tồn tại trong room
     let nickName = arrRoom[index].nickNames.find((n) => n === data.nickName);
@@ -64,7 +64,7 @@ io.on("connection", function (socket) {
       socket.idRoom = data.idRoom;
 
       console.log(socket.nickName + " Player join room: ", socket.idRoom);
-      console.log("Host đang có", arrRoom);
+      console.log("Host đang có: ", arrRoom);
     } else {
       socket.emit("isRightNickName", false);
     }
@@ -152,7 +152,7 @@ io.on("connection", function (socket) {
 
 //router
 app.get("/", function (req, res) {
-  res.send("Hello!");
+  res.send("Hello!!!!!!!!!!!!");
 });
 
 app.use("/api/questions", auth, require("./routes/questions.route"));
