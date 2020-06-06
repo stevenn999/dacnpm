@@ -20,7 +20,7 @@ export class EnterPin extends Component {
             e.preventDefault();
           }}
           method="POST"
-          className="col-10 col-sm-3"
+          className="col-sm-8 col-lg-3"
         >
           <div className="form-group">
             <input

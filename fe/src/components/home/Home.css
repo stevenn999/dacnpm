@@ -48,4 +48,7 @@
 }
 .buttonQuiz{
     width: 120px;
+    background-color: #678dcf;
+    color: #fff;
+    font-size: 17px;
 }
