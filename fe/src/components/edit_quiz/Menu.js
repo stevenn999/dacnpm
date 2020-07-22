@@ -22,15 +22,15 @@ export default class Menu extends Component {
             value={this.props.nameQuiz}
           ></input>
         </div>
-      
+
         <div>
-          <button className="btn btn-success btn-save" onClick={this.onSave}>
+          <button className="btn button-menu btn-save" onClick={this.onSave}>
             <i className="fa fa-floppy-o fa-2x " aria-hidden="true">
               Lưu
             </i>
           </button>
           <Link to="/home">
-            <button className="btn btn-danger btn-save">
+            <button className="btn button-menu btn-save">
               <i className="fa fa-times fa-2x " aria-hidden="true">
                 Thoát
               </i>

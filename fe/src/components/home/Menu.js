@@ -18,7 +18,7 @@ class Menu extends Component {
         </Link>
         <Link to="/create">
           <i
-            className="fa fa-plus fa-2x mt-2 button-menu-add  button-menu"
+            className="fa fa-plus fa-2x mt-2 mr-2 button-menu-add  button-menu"
             aria-hidden="true"
           >
             Thêm mới

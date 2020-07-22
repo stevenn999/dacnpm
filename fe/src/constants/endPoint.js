@@ -1,4 +1,4 @@
-const url = `https://dacnpm-nhom1.herokuapp.com`;
+const url = `http://localhost:8000`;
 // https://dacnpm-nhom1.herokuapp.com/
 // http://localhost:8000
 export const endPoint = url;

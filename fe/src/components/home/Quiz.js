@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 class Quiz extends Component {
-
-  removeQuiz=()=>{
+  removeQuiz = () => {
     const { idQuiz } = this.props;
-    const {removeQuiz}=this.props;
-    removeQuiz(idQuiz)
-  }
+    const { removeQuiz } = this.props;
+    removeQuiz(idQuiz);
+  };
   render() {
     const { idQuiz } = this.props;
     return (
@@ -22,21 +21,18 @@ class Quiz extends Component {
             <div className="menu-button">
               <Link to={`/edit/${idQuiz}`}>
                 <button className="btn  buttonQuiz ">
-                  <i className="fa fa-pencil " aria-hidden="true">
-                    Chỉnh sửa
-                  </i>
+                  <i className="fa fa-pencil mr-2" aria-hidden="true"></i>
+                  Chỉnh sửa
                 </button>
               </Link>
               <button className="btn buttonQuiz " onClick={this.removeQuiz}>
-                <i className="fa fa-trash" aria-hidden="true">
-                  Xóa
-                </i>
+                <i className="fa fa-trash mr-2" aria-hidden="true"></i>
+                Xóa
               </button>
               <Link to={`/option_play/${idQuiz}`} target="_blank">
-                <button className="btn buttonQuiz ">
-                  <i className="fa fa-play" aria-hidden="true">
-                    Chơi game
-                  </i>
+                <button className="btn buttonQuiz buttonPlay ">
+                  <i className="fa fa-play mr-2" aria-hidden="true"></i>
+                  Chơi game
                 </button>
               </Link>
             </div>

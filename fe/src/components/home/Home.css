@@ -5,7 +5,9 @@
 }
 
 .button-menu {
+
     color: white;
+
 }
 
 .button-menu:hover {
@@ -28,6 +30,10 @@
     border-radius: 10px;
 }
 
+.storeQuiz:hover {
+    background-color: #dee5f0;
+}
+
 .img-storeQuiz {
     height: 200px;
     width: 200px;
@@ -46,9 +52,15 @@
     flex-direction: column;
     justify-content: space-between;
 }
-.buttonQuiz{
-    width: 120px;
+
+.buttonQuiz {
+    width: 150px;
     background-color: #678dcf;
     color: #fff;
     font-size: 17px;
+}
+
+.buttonPlay {
+    background-color: #26890c;
+
 }
