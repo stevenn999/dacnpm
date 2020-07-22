@@ -1,0 +1,23 @@
+{
+    "questions": [{
+            "number": 1,
+            "question": "Cá gì có hình tròn?",
+            "rightAnswer": 2,
+            "answer": ["Cá chép",
+                "Cá mập",
+                "Cá viên chiên",
+                "Cá heo"
+            ]
+        },
+        {
+            "number": 2,
+            "question": "Ai là ca sĩ thể hiện bài hãy trao cho anh?",
+            "rightAnswer": 1,
+            "answer": ["Jack",
+                "Sơn Tùng MTP",
+                "Karik",
+                "Min"
+            ]
+        }
+    ]
+}
